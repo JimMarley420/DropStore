@@ -30,6 +30,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserStorage(userId: number, sizeChange: number): Promise<User>;
+  updateUser(userId: number, data: { fullName?: string | null; email?: string }): Promise<User>;
 
   // Folder operations
   getFolderById(id: number): Promise<Folder | undefined>;
@@ -215,6 +216,22 @@ export class MemStorage implements IStorage {
     
     this.users.set(userId, user);
     return user;
+  }
+  
+  async updateUser(userId: number, data: { fullName?: string | null; email?: string }): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    
+    const updatedUser = {
+      ...user,
+      ...data,
+      updatedAt: new Date()
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 
   // Folder operations
@@ -614,6 +631,24 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ 
         storageUsed: newSize,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+      
+    return updatedUser;
+  }
+  
+  async updateUser(userId: number, data: { fullName?: string | null; email?: string }): Promise<User> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        ...data,
         updatedAt: new Date()
       })
       .where(eq(users.id, userId))
