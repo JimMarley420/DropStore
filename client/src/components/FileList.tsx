@@ -131,7 +131,7 @@ export default function FileList({ folders, files, section }: FileListProps) {
               className="p-1.5 text-neutral-600 hover:bg-neutral-100 rounded-full"
               title="Delete"
             >
-              <Trash size={16} />
+              <Trash2 size={16} />
             </button>
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -213,6 +213,44 @@ export default function FileList({ folders, files, section }: FileListProps) {
             >
               <Share size={16} />
             </button>
+            {section !== "trash" && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveModal("delete");
+                  setModalData({ id: file.id, type: "file", name: file.name, folderId: file.folderId });
+                }}
+                className="p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-red-500 rounded-full"
+                title="Delete"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+            {section === "trash" && (
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await apiRequest('POST', `/api/files/${file.id}/restore`, {});
+                    queryClient.invalidateQueries({ queryKey: ['/api/trash'] });
+                    toast({
+                      title: "File restored",
+                      description: `${file.name} has been restored from trash.`,
+                    });
+                  } catch (error) {
+                    toast({
+                      title: "Restore failed",
+                      description: "Could not restore the file. Please try again.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+                className="p-1.5 text-neutral-600 hover:bg-neutral-100 rounded-full"
+                title="Restore"
+              >
+                <RefreshCw size={16} />
+              </button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger
                 onClick={(e) => e.stopPropagation()}
