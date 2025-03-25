@@ -203,8 +203,8 @@ export type InsertShare = z.infer<typeof insertShareSchema>;
 // Schéma pour la personnalisation du thème
 export const updateUserThemeSchema = z.object({
   primaryColor: z.string().regex(/^#([0-9A-F]{6})$/i, "Must be a valid hex color code"),
-  appearance: themeAppearanceEnum._type,
-  variant: themeVariantEnum._type,
+  appearance: z.enum(["light", "dark", "system"]),
+  variant: z.enum(["professional", "tint", "vibrant"]),
   radius: z.number().min(0).max(24),
 });
 

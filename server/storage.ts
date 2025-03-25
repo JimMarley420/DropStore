@@ -9,12 +9,20 @@ import {
   InsertShare,
   FileWithPath,
   FolderWithPath,
+  UserTheme,
+  InsertUserTheme,
   fileStatusEnum,
 } from "@shared/schema";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
 import { log } from "./vite";
+import { db } from "./db";
+import { eq, and, or, like, desc, isNull, sql } from "drizzle-orm";
+import { users, folders, files, shares, userThemes } from "@shared/schema";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { neon } from "@neondatabase/serverless";
 
 export interface IStorage {
   // User operations
@@ -57,6 +65,9 @@ export interface IStorage {
     files: FileWithPath[]; 
     breadcrumbs: Array<{ id: number | null; name: string }>;
   }>;
+
+  // Session store
+  readonly sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -69,6 +80,7 @@ export class MemStorage implements IStorage {
   private currentFileId: number;
   private currentShareId: number;
   private uploadDir: string;
+  private _sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -85,6 +97,12 @@ export class MemStorage implements IStorage {
     if (!fs.existsSync(this.uploadDir)) {
       fs.mkdirSync(this.uploadDir, { recursive: true });
     }
+    
+    // Initialize session store
+    const MemoryStore = require("memorystore")(session);
+    this._sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // 24 hours
+    });
     
     // Initialize with demo data
     this.initializeDemoData();
@@ -521,4 +539,450 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  private uploadDir: string;
+  private _sessionStore: session.Store;
+
+  constructor() {
+    // Create upload directory if it doesn't exist
+    this.uploadDir = path.join(process.cwd(), "uploads");
+    if (!fs.existsSync(this.uploadDir)) {
+      fs.mkdirSync(this.uploadDir, { recursive: true });
+    }
+    
+    // Initialize session store
+    const PostgresSessionStore = connectPg(session);
+    this._sessionStore = new PostgresSessionStore({
+      conObject: {
+        connectionString: process.env.DATABASE_URL,
+      },
+      createTableIfMissing: true
+    });
+    
+    log('Database storage initialized', 'storage');
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values({
+      ...insertUser,
+      storageUsed: 0,
+      storageLimit: 100 * 1024 * 1024 * 1024, // 100GB default
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning();
+    
+    // Create default user theme
+    await db.insert(userThemes).values({
+      userId: user.id,
+      primaryColor: "#4f46e5",
+      appearance: "system",
+      variant: "professional",
+      radius: 8,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
+    return user;
+  }
+
+  async updateUserStorage(userId: number, sizeChange: number): Promise<User> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+
+    let newSize = user.storageUsed + sizeChange;
+    if (newSize < 0) newSize = 0;
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        storageUsed: newSize,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+      
+    return updatedUser;
+  }
+
+  // Folder operations
+  async getFolderById(id: number): Promise<Folder | undefined> {
+    const [folder] = await db.select().from(folders).where(eq(folders.id, id));
+    return folder;
+  }
+
+  async getFoldersByParentId(userId: number, parentId: number | null): Promise<Folder[]> {
+    return db.select()
+      .from(folders)
+      .where(
+        and(
+          eq(folders.userId, userId),
+          eq(folders.status, "active"),
+          parentId === null 
+            ? isNull(folders.parentId) 
+            : eq(folders.parentId, parentId)
+        )
+      );
+  }
+
+  async createFolder(folder: InsertFolder): Promise<Folder> {
+    const [newFolder] = await db.insert(folders).values({
+      ...folder,
+      status: "active",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning();
+    
+    return newFolder;
+  }
+
+  async updateFolder(id: number, data: Partial<Folder>): Promise<Folder> {
+    const [updatedFolder] = await db
+      .update(folders)
+      .set({ 
+        ...data,
+        updatedAt: new Date()
+      })
+      .where(eq(folders.id, id))
+      .returning();
+      
+    if (!updatedFolder) {
+      throw new Error(`Folder with ID ${id} not found`);
+    }
+    
+    return updatedFolder;
+  }
+
+  async deleteFolder(id: number): Promise<void> {
+    // Delete all files in the folder
+    await db
+      .delete(files)
+      .where(eq(files.folderId, id));
+    
+    // Get all subfolders
+    const subfolders = await db
+      .select()
+      .from(folders)
+      .where(eq(folders.parentId, id));
+      
+    // Delete subfolders recursively
+    for (const subfolder of subfolders) {
+      await this.deleteFolder(subfolder.id);
+    }
+    
+    // Delete the folder itself
+    await db
+      .delete(folders)
+      .where(eq(folders.id, id));
+  }
+
+  async getFolderPath(folderId: number | null): Promise<Array<{ id: number; name: string }>> {
+    if (!folderId) return [];
+    
+    const path: Array<{ id: number; name: string }> = [];
+    let currentFolderId = folderId;
+    
+    while (currentFolderId) {
+      const [folder] = await db
+        .select({ id: folders.id, name: folders.name, parentId: folders.parentId })
+        .from(folders)
+        .where(eq(folders.id, currentFolderId));
+        
+      if (!folder) break;
+      
+      // Add to the beginning of the array to maintain correct order
+      path.unshift({ id: folder.id, name: folder.name });
+      
+      currentFolderId = folder.parentId;
+    }
+    
+    return path;
+  }
+
+  // File operations
+  async getFileById(id: number): Promise<File | undefined> {
+    const [file] = await db.select().from(files).where(eq(files.id, id));
+    return file;
+  }
+
+  async getFilesByFolderId(userId: number, folderId: number | null): Promise<File[]> {
+    return db.select()
+      .from(files)
+      .where(
+        and(
+          eq(files.userId, userId),
+          eq(files.status, "active"),
+          folderId === null 
+            ? isNull(files.folderId) 
+            : eq(files.folderId, folderId)
+        )
+      );
+  }
+
+  async createFile(file: InsertFile): Promise<File> {
+    const [newFile] = await db.insert(files).values({
+      ...file,
+      status: "active",
+      favorite: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null
+    }).returning();
+    
+    // Update user storage
+    await this.updateUserStorage(file.userId, file.size);
+    
+    return newFile;
+  }
+
+  async updateFile(id: number, data: Partial<File>): Promise<File> {
+    const [updatedFile] = await db
+      .update(files)
+      .set({ 
+        ...data,
+        updatedAt: new Date()
+      })
+      .where(eq(files.id, id))
+      .returning();
+      
+    if (!updatedFile) {
+      throw new Error(`File with ID ${id} not found`);
+    }
+    
+    return updatedFile;
+  }
+
+  async deleteFile(id: number): Promise<void> {
+    const [file] = await db.select().from(files).where(eq(files.id, id));
+    if (!file) {
+      throw new Error(`File with ID ${id} not found`);
+    }
+    
+    // Remove the file from storage
+    try {
+      const filePath = path.join(this.uploadDir, file.path);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (error) {
+      log(`Error deleting file: ${error}`, "storage");
+    }
+    
+    // Update user storage
+    await this.updateUserStorage(file.userId, -file.size);
+    
+    // Delete from database
+    await db
+      .delete(files)
+      .where(eq(files.id, id));
+  }
+
+  async moveFileToTrash(id: number): Promise<File> {
+    const [updatedFile] = await db
+      .update(files)
+      .set({ 
+        status: "trashed",
+        deletedAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(files.id, id))
+      .returning();
+      
+    if (!updatedFile) {
+      throw new Error(`File with ID ${id} not found`);
+    }
+    
+    return updatedFile;
+  }
+
+  async restoreFileFromTrash(id: number): Promise<File> {
+    const [updatedFile] = await db
+      .update(files)
+      .set({ 
+        status: "active",
+        deletedAt: null,
+        updatedAt: new Date()
+      })
+      .where(eq(files.id, id))
+      .returning();
+      
+    if (!updatedFile) {
+      throw new Error(`File with ID ${id} not found`);
+    }
+    
+    return updatedFile;
+  }
+
+  // Search operations
+  async searchFiles(userId: number, query: string, type?: string): Promise<File[]> {
+    // Base query for active files by this user
+    let baseQuery = db
+      .select()
+      .from(files)
+      .where(
+        and(
+          eq(files.userId, userId),
+          eq(files.status, "active")
+        )
+      );
+    
+    // Add text search if query is provided
+    if (query) {
+      const lowerQuery = `%${query.toLowerCase()}%`;
+      baseQuery = baseQuery.where(
+        or(
+          like(sql`lower(${files.name})`, lowerQuery),
+          like(sql`lower(${files.originalName})`, lowerQuery)
+        )
+      );
+    }
+    
+    // Filter by type if provided
+    if (type) {
+      switch (type) {
+        case "images":
+          baseQuery = baseQuery.where(like(files.type, 'image/%'));
+          break;
+        case "documents":
+          baseQuery = baseQuery.where(
+            or(
+              like(files.type, '%pdf%'),
+              like(files.type, '%word%'),
+              like(files.type, '%excel%'),
+              like(files.type, '%powerpoint%'),
+              like(files.type, '%text%'),
+              like(files.type, '%spreadsheet%'),
+              like(files.type, '%presentation%')
+            )
+          );
+          break;
+        case "videos":
+          baseQuery = baseQuery.where(like(files.type, 'video/%'));
+          break;
+        case "audio":
+          baseQuery = baseQuery.where(like(files.type, 'audio/%'));
+          break;
+      }
+    }
+    
+    return baseQuery;
+  }
+
+  // Share operations
+  async createShare(share: InsertShare): Promise<Share> {
+    const [newShare] = await db.insert(shares).values({
+      ...share,
+      createdAt: new Date()
+    }).returning();
+    
+    return newShare;
+  }
+
+  async getShareByToken(token: string): Promise<Share | undefined> {
+    const [share] = await db.select().from(shares).where(eq(shares.token, token));
+    return share;
+  }
+
+  async deleteShare(id: number): Promise<void> {
+    await db.delete(shares).where(eq(shares.id, id));
+  }
+
+  // Stats
+  async getUserStorageStats(userId: number): Promise<{ used: number; total: number }> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    
+    return {
+      used: user.storageUsed,
+      total: user.storageLimit,
+    };
+  }
+
+  // Utility methods
+  async getFolderContents(userId: number, folderId: number | null): Promise<{ 
+    folders: FolderWithPath[]; 
+    files: FileWithPath[];
+    breadcrumbs: Array<{ id: number | null; name: string }>;
+  }> {
+    // Get folders
+    const rawFolders = await this.getFoldersByParentId(userId, folderId);
+    const folders: FolderWithPath[] = await Promise.all(
+      rawFolders.map(async (folder) => {
+        // Get item count for each folder
+        const folderItems = await this.getFoldersByParentId(userId, folder.id);
+        const fileItems = await this.getFilesByFolderId(userId, folder.id);
+        const itemCount = folderItems.length + fileItems.length;
+        
+        // Get breadcrumbs
+        const breadcrumbs = await this.getFolderPath(folder.id);
+        
+        return {
+          ...folder,
+          itemCount,
+          breadcrumbs,
+        };
+      })
+    );
+    
+    // Get files
+    const rawFiles = await this.getFilesByFolderId(userId, folderId);
+    const files: FileWithPath[] = await Promise.all(
+      rawFiles.map(async (file) => {
+        // Get breadcrumbs
+        const breadcrumbs = await this.getFolderPath(file.folderId);
+        
+        return {
+          ...file,
+          breadcrumbs,
+          url: `/api/files/${file.id}/content`, // URL for downloading/viewing file
+        };
+      })
+    );
+    
+    // Get breadcrumbs for current folder
+    let breadcrumbs: Array<{ id: number | null; name: string }> = [
+      { id: null, name: "Home" }
+    ];
+    
+    if (folderId) {
+      const folderPath = await this.getFolderPath(folderId);
+      breadcrumbs = [
+        { id: null, name: "Home" },
+        ...folderPath
+      ];
+    }
+    
+    return {
+      folders,
+      files,
+      breadcrumbs,
+    };
+  }
+  
+  // Getter for session store
+  get sessionStore(): session.Store {
+    return this._sessionStore;
+  }
+  
+  // Setter for session store
+  set sessionStore(store: session.Store) {
+    this._sessionStore = store;
+  }
+}
+
+// Utiliser le stockage en base de données
+export const storage = new DatabaseStorage();
