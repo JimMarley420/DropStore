@@ -107,7 +107,8 @@ export default function AuthPage() {
 
       {/* Hero section */}
       <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-10">
-        <div className="max-w-xl relative z-10 glowing-border p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
+        <div className="max-w-xl relative z-10 glowing-border-container p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
+          <div className="glowing-border"></div>
           <h1 className="text-4xl font-bold mb-6 gradient-heading text-glow">
             DropStore <span className="text-lg font-light text-blue-300 ml-2">v1.0</span>
           </h1>
