@@ -104,11 +104,6 @@ export default function Home() {
       {/* Mobile Navigation */}
       <MobileNavigation />
 
-      {/* Simple Footer */}
-      <div className="w-full text-center py-2 text-xs text-gray-500 bg-white border-t">
-        Développé par Jimmy Marley • <a href="https://discord.gg/ecwtNzYPSN" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Discord</a>
-      </div>
-
       {/* Modals */}
       {activeModal === "upload" && <UploadModal />}
       {activeModal === "newFolder" && <NewFolderModal />}
