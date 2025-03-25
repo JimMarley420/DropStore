@@ -118,6 +118,12 @@ export const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
+// User profile update schema
+export const updateProfileSchema = z.object({
+  fullName: z.string().nullable().optional(),
+  email: z.string().email("Please enter a valid email address"),
+});
+
 export const insertFolderSchema = createInsertSchema(folders).pick({
   name: true,
   userId: true,
