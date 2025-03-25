@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, FolderPlus, Grid, List, SortDesc, Trash2, RefreshCw } from "lucide-react";
+import { Upload, FolderPlus, Grid, List, SortDesc } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -17,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
 
 interface FileViewProps {
   section: string;
@@ -30,7 +29,6 @@ interface FileViewProps {
 export default function FileView({ section, folderId, data, isLoading, error }: FileViewProps) {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
-  const { toast } = useToast();
   const { 
     viewMode, 
     setViewMode, 
@@ -43,7 +41,6 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
   } = useFileContext();
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   
   // Générer les initiales pour l'avatar fallback
   const getInitials = () => {
@@ -60,53 +57,6 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       setLocation("/");
     } else {
       setLocation(`/folder/${id}`);
-    }
-  };
-  
-  // Refresh files and folders
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      await queryClient.invalidateQueries({ 
-        queryKey: ["/api/folders", folderId ? parseInt(folderId) : null] 
-      });
-      toast({
-        title: "Rafraîchissement terminé",
-        description: "La liste des fichiers a été mise à jour",
-        variant: "default",
-      });
-    } catch (err) {
-      toast({
-        title: "Erreur de rafraîchissement",
-        description: "Impossible de mettre à jour la liste des fichiers",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-  
-  // Delete file
-  const handleDeleteFile = async (fileId: number) => {
-    try {
-      await apiRequest("DELETE", `/api/files/${fileId}`);
-      
-      // Refresh the file list
-      queryClient.invalidateQueries({ 
-        queryKey: ["/api/folders", folderId ? parseInt(folderId) : null] 
-      });
-      
-      toast({
-        title: "Fichier supprimé",
-        description: "Le fichier a été déplacé vers la corbeille",
-        variant: "default",
-      });
-    } catch (err) {
-      toast({
-        title: "Erreur de suppression",
-        description: "Impossible de supprimer le fichier",
-        variant: "destructive",
-      });
     }
   };
 
@@ -344,18 +294,6 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Refresh Button */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-          >
-            <RefreshCw size={16} className={`mr-1 text-blue-400 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span className="ml-1 hidden sm:inline">Rafraîchir</span>
-          </Button>
 
           {/* New Folder */}
           <Button 

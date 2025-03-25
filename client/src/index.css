@@ -198,30 +198,17 @@
     animation: float 6s ease-in-out infinite;
   }
   
-  .glowing-border-container {
-    position: relative;
-    z-index: 1;
-    pointer-events: auto;
-  }
-  
   .glowing-border {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    z-index: 0;
-    border-radius: inherit;
-    pointer-events: none;
+    position: relative;
   }
   
   .glowing-border::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
     border: 1px solid transparent;
     border-radius: inherit;
     background: linear-gradient(45deg, #3b82f6, transparent, #6366f1, transparent) border-box;
