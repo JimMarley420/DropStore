@@ -4,17 +4,21 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import AuthPage from "@/pages/auth-page";
 import { FileContextProvider } from "@/context/FileContext";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/folder/:folderId" component={Home} />
-      <Route path="/recent" component={Home} />
-      <Route path="/shared" component={Home} />
-      <Route path="/favorites" component={Home} />
-      <Route path="/trash" component={Home} />
+      <ProtectedRoute path="/" component={Home} />
+      <ProtectedRoute path="/folder/:folderId" component={Home} />
+      <ProtectedRoute path="/recent" component={Home} />
+      <ProtectedRoute path="/shared" component={Home} />
+      <ProtectedRoute path="/favorites" component={Home} />
+      <ProtectedRoute path="/trash" component={Home} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -23,10 +27,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <FileContextProvider>
-        <Router />
-        <Toaster />
-      </FileContextProvider>
+      <AuthProvider>
+        <FileContextProvider>
+          <Router />
+          <Toaster />
+        </FileContextProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
