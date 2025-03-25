@@ -11,7 +11,8 @@ import {
   searchSchema,
   registerSchema,
   loginSchema,
-  insertUserSchema
+  insertUserSchema,
+  updateProfileSchema
 } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -187,6 +188,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching storage stats:", error);
       return res.status(500).json({ message: "Failed to fetch storage stats" });
+    }
+  });
+  
+  // Update user profile
+  app.patch("/api/user/profile", isAuthenticated, async (req: Request, res: Response) => {
+    const userId = (req as any).userId;
+    
+    try {
+      const validatedData = updateProfileSchema.parse(req.body);
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update user profile
+      const updatedUser = await storage.updateUser(userId, validatedData);
+      
+      // Don't send password back
+      const { password, ...userProfile } = updatedUser;
+      return res.json(userProfile);
+    } catch (error: any) {
+      console.error("Error updating user profile:", error);
+      return res.status(400).json({ message: error.message || "Failed to update profile" });
     }
   });
 
