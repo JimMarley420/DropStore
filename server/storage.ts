@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
       username: "demo",
       password: "password",
       storageUsed: 0,
-      storageLimit: 100 * 1024 * 1024 * 1024, // 100GB
+      storageLimit: 2000000000, // ~2GB
       createdAt: new Date(),
     };
     
@@ -197,7 +197,7 @@ export class MemStorage implements IStorage {
       ...insertUser,
       id,
       storageUsed: 0,
-      storageLimit: 100 * 1024 * 1024 * 1024, // 100GB default
+      storageLimit: 2000000000, // ~2GB default
       createdAt: now,
     };
     this.users.set(id, user);
@@ -582,7 +582,7 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.insert(users).values({
       ...insertUser,
       storageUsed: 0,
-      storageLimit: 100 * 1024 * 1024 * 1024, // 100GB default
+      storageLimit: 2000000000, // ~2GB default
       createdAt: new Date(),
       updatedAt: new Date()
     }).returning();
