@@ -345,6 +345,18 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Refresh Button */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+          >
+            <RefreshCw size={16} className={`mr-1 text-blue-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="ml-1 hidden sm:inline">Rafraîchir</span>
+          </Button>
+
           {/* New Folder */}
           <Button 
             variant="ghost" 
