@@ -82,7 +82,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register a new user
   app.post("/api/register", async (req: Request, res: Response) => {
     try {
-      const validatedData = registerSchema.parse(req.body);
+      // Utiliser insertUserSchema plutôt que registerSchema pour la validation côté serveur
+      // car registerSchema contient confirmPassword qui n'est pas dans le modèle
+      const validatedData = insertUserSchema.parse(req.body);
       
       // Check if username already exists
       const existingUser = await storage.getUserByUsername(validatedData.username);
