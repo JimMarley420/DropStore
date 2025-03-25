@@ -85,20 +85,22 @@ export default function Home() {
   }, [match, section, setLocation]);
 
   return (
-    <div className="flex flex-col h-screen bg-neutral-100">
+    <div className="flex flex-col h-screen">
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar />
 
         {/* Main Content */}
-        <FileView 
-          section={section} 
-          folderId={id} 
-          data={data} 
-          isLoading={isLoading} 
-          error={error} 
-        />
+        <div className="gradient-card rounded-none border-0 flex-1">
+          <FileView 
+            section={section} 
+            folderId={id} 
+            data={data} 
+            isLoading={isLoading} 
+            error={error} 
+          />
+        </div>
       </div>
 
       {/* Mobile Navigation */}

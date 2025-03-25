@@ -35,7 +35,7 @@ export default function Sidebar() {
   });
 
   return (
-    <aside className="hidden md:flex flex-col w-60 lg:w-72 border-r border-neutral-200 bg-white py-4 overflow-y-auto scrollbar-thin">
+    <aside className="hidden md:flex flex-col w-60 lg:w-72 border-r border-gray-700/50 gradient-card rounded-none py-4 overflow-y-auto scrollbar-thin">
       {/* Storage Overview */}
       <StorageStats />
 
@@ -46,8 +46,8 @@ export default function Sidebar() {
             <Link href="/">
               <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "home" 
-                  ? "text-primary-500 bg-primary-50 font-medium" 
-                  : "text-neutral-700 hover:bg-neutral-100"
+                  ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
+                  : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <FolderIcon className="mr-3 h-5 w-5" />
                 My Files
@@ -58,8 +58,8 @@ export default function Sidebar() {
             <Link href="/recent">
               <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "recent" 
-                  ? "text-primary-500 bg-primary-50 font-medium" 
-                  : "text-neutral-700 hover:bg-neutral-100"
+                  ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
+                  : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <ClockIcon className="mr-3 h-5 w-5" />
                 Recent
@@ -70,8 +70,8 @@ export default function Sidebar() {
             <Link href="/shared">
               <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "shared" 
-                  ? "text-primary-500 bg-primary-50 font-medium" 
-                  : "text-neutral-700 hover:bg-neutral-100"
+                  ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
+                  : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <ShareIcon className="mr-3 h-5 w-5" />
                 Shared
@@ -82,8 +82,8 @@ export default function Sidebar() {
             <Link href="/favorites">
               <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "favorites" 
-                  ? "text-primary-500 bg-primary-50 font-medium" 
-                  : "text-neutral-700 hover:bg-neutral-100"
+                  ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
+                  : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <StarIcon className="mr-3 h-5 w-5" />
                 Favorites
@@ -94,8 +94,8 @@ export default function Sidebar() {
             <Link href="/trash">
               <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "trash" 
-                  ? "text-primary-500 bg-primary-50 font-medium" 
-                  : "text-neutral-700 hover:bg-neutral-100"
+                  ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
+                  : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <TrashIcon className="mr-3 h-5 w-5" />
                 Trash
@@ -104,33 +104,33 @@ export default function Sidebar() {
           </li>
         </ul>
         
-        <div className="border-t border-neutral-200 my-4"></div>
+        <div className="border-t border-gray-700/30 my-4"></div>
         
         {/* Quick Access Categories */}
         <div className="px-4 mb-2">
-          <h3 className="text-xs uppercase text-neutral-500 font-medium">Categories</h3>
+          <h3 className="text-xs uppercase text-blue-400 font-medium">Categories</h3>
         </div>
         <ul>
           <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-neutral-700 hover:bg-neutral-100 rounded-md mx-2">
+            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
               <ImageIcon className="mr-3 h-5 w-5 text-blue-500" />
               Images
             </a>
           </li>
           <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-neutral-700 hover:bg-neutral-100 rounded-md mx-2">
+            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
               <FileTextIcon className="mr-3 h-5 w-5 text-green-500" />
               Documents
             </a>
           </li>
           <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-neutral-700 hover:bg-neutral-100 rounded-md mx-2">
+            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
               <VideoIcon className="mr-3 h-5 w-5 text-red-500" />
               Videos
             </a>
           </li>
           <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-neutral-700 hover:bg-neutral-100 rounded-md mx-2">
+            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
               <MusicIcon className="mr-3 h-5 w-5 text-purple-500" />
               Audio
             </a>
@@ -141,7 +141,7 @@ export default function Sidebar() {
       {/* Upload Button */}
       <div className="px-4 mt-2">
         <Button 
-          className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+          className="w-full gradient-button text-white"
           onClick={() => {
             setActiveModal("upload");
             setModalData(null);
