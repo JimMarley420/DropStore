@@ -360,7 +360,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
       
-      const validatedData = uploadFileSchema.parse(req.body);
+      // Préparer les données pour la validation
+      const dataToValidate = {
+        ...req.body,
+        // Convertir folderId en nombre si présent
+        folderId: req.body.folderId ? parseInt(req.body.folderId, 10) : null
+      };
+      
+      const validatedData = uploadFileSchema.parse(dataToValidate);
       
       // Verify folder exists if folderId is provided
       if (validatedData.folderId) {
