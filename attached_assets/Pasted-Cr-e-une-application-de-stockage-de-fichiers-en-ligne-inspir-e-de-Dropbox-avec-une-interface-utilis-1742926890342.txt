@@ -1,0 +1,78 @@
+Crée une application de stockage de fichiers en ligne inspirée de Dropbox, avec une interface utilisateur fluide et intuitive. L’application doit permettre aux utilisateurs de téléverser, organiser, partager et gérer leurs fichiers facilement.
+
+🗄️ Gestion des fichiers
+Téléversement de fichiers jusqu’à 10 Go par fichier.
+
+Stockage des fichiers au minimum pendant 30 jours avant suppression automatique.
+
+Organisation des fichiers par dossiers et sous-dossiers.
+
+Fonction glisser-déposer pour téléverser rapidement des fichiers.
+
+Recherche avancée avec filtres (nom, type de fichier, taille, date d’ajout).
+
+Affichage des fichiers sous forme de grille ou liste avec aperçu rapide.
+
+Détection automatique des doublons pour éviter les fichiers en double.
+
+🔗 Partage & Collaboration
+Génération de liens de partage publics ou privés.
+
+Définition de permissions sur les fichiers (lecture, écriture, suppression).
+
+Protection des liens avec mot de passe et date d’expiration.
+
+Collaboration en temps réel sur les documents avec un historique des modifications.
+
+Intégration d’un système de commentaires sur les fichiers partagés.
+
+📜 Historique & Sécurité
+Versionnage des fichiers : possibilité de restaurer d’anciennes versions.
+
+Historique des actions : logs détaillés des modifications et téléchargements.
+
+Fichiers supprimés envoyés dans une corbeille récupérable pendant 30 jours.
+
+Sauvegarde automatique en cas de fermeture accidentelle.
+
+Double authentification (2FA) pour sécuriser les comptes.
+
+📲 Accessibilité & Synchronisation
+Compatible PC, mobile et tablette avec une interface adaptative.
+
+Mode hors-ligne permettant d’accéder aux fichiers récents sans connexion.
+
+Synchronisation automatique entre les appareils.
+
+Téléchargement de plusieurs fichiers en ZIP.
+
+Aperçu des fichiers (images, vidéos, PDF, Word, Excel) sans téléchargement.
+
+📊 Stockage & Gestion de l’espace
+Affichage de l’espace de stockage utilisé et disponible.
+
+Possibilité de souscrire à des formules payantes pour plus d’espace.
+
+Compression automatique des fichiers volumineux pour optimiser l’espace.
+
+Suppression automatique des fichiers inactifs après 30 jours (si non marqués comme importants).
+
+🌐 Partage avec d'autres plateformes
+Intégration avec Google Drive, OneDrive, iCloud pour importer des fichiers.
+
+Connecteurs pour Slack, Discord, Teams afin d’envoyer des fichiers rapidement.
+
+Envoi direct par email avec lien sécurisé.
+
+🏆 Bonus : Fonctionnalités Avancées
+Éditeur en ligne pour modifier des documents sans les télécharger.
+
+OCR (Reconnaissance de texte) pour extraire du texte des images/PDF.
+
+Lecture en streaming des fichiers vidéo sans attendre le téléchargement.
+
+Générateur de QR Code pour partager des fichiers facilement.
+
+Possibilité de signer électroniquement des documents PDF.
+
+L’application doit être rapide, sécurisée et scalable, avec une gestion des fichiers optimisée pour les performances.
