@@ -10,7 +10,6 @@ import SharedFileView from "@/pages/SharedFileView";
 import { FileContextProvider } from "@/context/FileContext";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
-import Footer from "@/components/Footer";
 
 function Router() {
   return (
@@ -35,11 +34,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <FileContextProvider>
-          <div className="flex flex-col min-h-screen">
-            <Router />
-            <Footer />
-            <Toaster />
-          </div>
+          <Router />
+          <Toaster />
         </FileContextProvider>
       </AuthProvider>
     </QueryClientProvider>
