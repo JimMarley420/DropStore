@@ -42,6 +42,9 @@ export default function SharedFileView() {
         );
         const shareData = await shareResponse.json();
         
+        // Réinitialiser l'affichage du formulaire de mot de passe si on a pu charger les données
+        setShowPasswordInput(false);
+        
         // Then get the specific file from the share, if it's not the direct file
         if (shareData.item.id !== fileId) {
           const fileResponse = await apiRequest(

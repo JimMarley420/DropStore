@@ -27,6 +27,8 @@ export default function SharePage() {
           "GET", 
           `/api/shares/${token}${password ? `?password=${encodeURIComponent(password)}` : ""}`
         );
+        // Réinitialiser l'affichage du formulaire de mot de passe si on a pu charger les données
+        setShowPasswordInput(false);
         return response.json();
       } catch (error: any) {
         // Detect if password is required
