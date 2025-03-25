@@ -190,6 +190,7 @@ function RegisterForm() {
       username: "",
       email: "",
       password: "",
+      confirmPassword: "",
       fullName: "",
     },
   });
