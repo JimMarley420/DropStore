@@ -40,10 +40,14 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="flex h-screen">
       {/* Authentication forms */}
-      <div className="flex items-center justify-center w-full lg:w-1/2">
+      <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card">
         <div className="max-w-md w-full px-4">
+          <div className="mb-8 text-center">
+            <h1 className="gradient-heading text-3xl font-bold mb-2">DropStore</h1>
+            <p className="text-muted-foreground">Votre espace de stockage cloud sécurisé</p>
+          </div>
           <Tabs defaultValue="login" value={tab} onValueChange={(value) => setTab(value as AuthTab)}>
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="login">Connexion</TabsTrigger>
@@ -62,25 +66,25 @@ export default function AuthPage() {
       </div>
 
       {/* Hero section */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 flex-col items-center justify-center text-white p-12">
-        <div className="max-w-xl">
-          <h1 className="text-4xl font-bold mb-6">DropStore</h1>
+      <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-10">
+        <div className="max-w-xl relative z-10">
+          <h1 className="text-4xl font-bold mb-6 gradient-heading">DropStore</h1>
           <h2 className="text-2xl font-semibold mb-4">Stockez, partagez et accédez à vos fichiers où que vous soyez</h2>
           <p className="mb-6 text-lg opacity-90">
             Une solution de stockage en ligne sécurisée et facile à utiliser pour tous vos documents, photos, vidéos et plus encore.
           </p>
           <ul className="space-y-3">
             <li className="flex items-center">
-              <CheckIcon className="mr-2" /> Stockage sécurisé pour tous vos fichiers
+              <CheckIcon className="mr-2 text-blue-400" /> Stockage sécurisé pour tous vos fichiers
             </li>
             <li className="flex items-center">
-              <CheckIcon className="mr-2" /> Partage facile avec vos amis et collègues
+              <CheckIcon className="mr-2 text-blue-400" /> Partage facile avec vos amis et collègues
             </li>
             <li className="flex items-center">
-              <CheckIcon className="mr-2" /> Accès depuis n'importe quel appareil
+              <CheckIcon className="mr-2 text-blue-400" /> Accès depuis n'importe quel appareil
             </li>
             <li className="flex items-center">
-              <CheckIcon className="mr-2" /> Sauvegarde automatique de vos données
+              <CheckIcon className="mr-2 text-blue-400" /> Sauvegarde automatique de vos données
             </li>
           </ul>
         </div>
@@ -124,9 +128,9 @@ function LoginForm() {
   }
 
   return (
-    <Card>
+    <Card className="gradient-card border-gray-700/30 shadow-xl">
       <CardHeader>
-        <CardTitle>Connexion</CardTitle>
+        <CardTitle className="gradient-heading">Connexion</CardTitle>
         <CardDescription>
           Connectez-vous à votre compte DropStore
         </CardDescription>
@@ -141,7 +145,11 @@ function LoginForm() {
                 <FormItem>
                   <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
-                    <Input placeholder="Entrez votre nom d'utilisateur" {...field} />
+                    <Input 
+                      placeholder="Entrez votre nom d'utilisateur" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,7 +162,12 @@ function LoginForm() {
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -162,7 +175,7 @@ function LoginForm() {
             />
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full gradient-button"
               disabled={loginMutation.isPending}
             >
               {loginMutation.isPending ? (
@@ -202,9 +215,9 @@ function RegisterForm() {
   }
 
   return (
-    <Card>
+    <Card className="gradient-card border-gray-700/30 shadow-xl">
       <CardHeader>
-        <CardTitle>Inscription</CardTitle>
+        <CardTitle className="gradient-heading">Inscription</CardTitle>
         <CardDescription>
           Créez un compte pour commencer à utiliser DropStore
         </CardDescription>
@@ -219,7 +232,11 @@ function RegisterForm() {
                 <FormItem>
                   <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
-                    <Input placeholder="Choisissez un nom d'utilisateur" {...field} />
+                    <Input 
+                      placeholder="Choisissez un nom d'utilisateur" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -232,7 +249,12 @@ function RegisterForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="votre@email.com" {...field} />
+                    <Input 
+                      type="email" 
+                      placeholder="votre@email.com" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -245,7 +267,11 @@ function RegisterForm() {
                 <FormItem>
                   <FormLabel>Nom complet</FormLabel>
                   <FormControl>
-                    <Input placeholder="Votre nom complet" {...field} />
+                    <Input 
+                      placeholder="Votre nom complet" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -258,7 +284,12 @@ function RegisterForm() {
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -271,7 +302,12 @@ function RegisterForm() {
                 <FormItem>
                   <FormLabel>Confirmer le mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="bg-gray-800/50 border-gray-700/50"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -279,7 +315,7 @@ function RegisterForm() {
             />
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full gradient-button" 
               disabled={registerMutation.isPending}
             >
               {registerMutation.isPending ? (

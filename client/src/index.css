@@ -9,5 +9,39 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    background: linear-gradient(to bottom right, hsl(222, 47%, 10%), hsl(222, 47%, 5%));
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .gradient-heading {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600;
+  }
+  
+  .gradient-card {
+    @apply bg-gradient-to-br from-gray-800/80 to-gray-900/90 backdrop-blur-sm border border-gray-700/50;
+  }
+  
+  .gradient-button {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600;
+  }
+
+  .auth-hero-bg {
+    background: linear-gradient(135deg, hsl(222, 60%, 12%), hsl(222, 60%, 8%));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 40%, hsla(220, 100%, 60%, 0.1), transparent 35%),
+                radial-gradient(circle at 70% 70%, hsla(260, 100%, 60%, 0.1), transparent 35%);
+    z-index: 0;
   }
 }
