@@ -8,9 +8,12 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   MoreHorizontal, 
   Pencil, 
-  Trash, 
+  Trash2, 
   Download, 
-  Share 
+  Share,
+  RefreshCw,
+  Star,
+  StarOff
 } from "lucide-react";
 import {
   DropdownMenu,

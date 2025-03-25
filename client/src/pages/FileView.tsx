@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, FolderPlus, Grid, List, SortDesc } from "lucide-react";
+import { Upload, FolderPlus, Grid, List, SortDesc, RefreshCw, Trash } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -228,6 +228,27 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-3">
+          {/* Refresh Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
+            onClick={() => {
+              if (section === 'folder' && folderId) {
+                queryClient.invalidateQueries({ queryKey: [`/api/folders/${folderId}/contents`] });
+              } else if (section === 'trash') {
+                queryClient.invalidateQueries({ queryKey: ["/api/trash"] });
+              } else {
+                queryClient.invalidateQueries({ queryKey: ["/api/folders/contents"] });
+              }
+            }}
+            title="Rafraîchir"
+            disabled={isLoading}
+          >
+            <RefreshCw size={16} className={`mr-1 ${isLoading ? 'animate-spin' : ''}`} />
+            <span className="ml-1 hidden sm:inline">Rafraîchir</span>
+          </Button>
+          
           {/* View Toggle */}
           <div className="border border-gray-700/50 rounded-lg flex bg-gray-900/30 backdrop-blur-sm shadow-inner overflow-hidden">
             <Button

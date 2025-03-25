@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useFileContext } from "@/context/FileContext";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { formatFileSize, formatDate, getFileIcon } from "@/lib/file-utils";
-import { MoreHorizontal, Download, Share, Star, StarOff } from "lucide-react";
+import { MoreHorizontal, Download, Share, Star, StarOff, Trash2, RefreshCw } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -108,6 +108,18 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
         variant: "destructive",
       });
     }
+  };
+  
+  // Delete file
+  const handleDelete = (file: FileWithPath, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setActiveModal("delete");
+    setModalData({ 
+      id: file.id, 
+      type: "file", 
+      name: file.name,
+      folderId: file.folderId 
+    });
   };
 
   return (
@@ -222,16 +234,25 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                   className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
                   title="Restore"
                 >
-                  <i className="ri-refresh-line text-sm"></i>
+                  <RefreshCw size={16} />
                 </button>
               ) : (
-                <button
-                  onClick={(e) => toggleFavorite(file, e)}
-                  className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
-                  title={file.favorite ? "Remove from favorites" : "Add to favorites"}
-                >
-                  {file.favorite ? <StarOff size={16} /> : <Star size={16} />}
-                </button>
+                <>
+                  <button
+                    onClick={(e) => toggleFavorite(file, e)}
+                    className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                    title={file.favorite ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    {file.favorite ? <StarOff size={16} /> : <Star size={16} />}
+                  </button>
+                  <button
+                    onClick={(e) => handleDelete(file, e)}
+                    className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600 hover:text-red-500"
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </>
               )}
             </div>
           </div>
