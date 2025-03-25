@@ -23,7 +23,7 @@ export const users = pgTable("users", {
   fullName: text("full_name"),
   password: text("password").notNull(),
   storageUsed: integer("storage_used").notNull().default(0),
-  storageLimit: integer("storage_limit").notNull().default(100 * 1024 * 1024 * 1024), // 100GB default
+  storageLimit: integer("storage_limit").notNull().default(2000000000), // ~2GB default
   avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
