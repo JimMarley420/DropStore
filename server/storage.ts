@@ -476,6 +476,11 @@ export class MemStorage implements IStorage {
       total: user.storageLimit,
     };
   }
+  
+  // Accessor for session store
+  get sessionStore(): session.Store {
+    return this._sessionStore;
+  }
 
   // Utility methods
   async getFolderContents(userId: number, folderId: number | null): Promise<{ 
