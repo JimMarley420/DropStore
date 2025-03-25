@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Upload, FolderPlus, Grid, List, SortDesc } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +28,7 @@ interface FileViewProps {
 
 export default function FileView({ section, folderId, data, isLoading, error }: FileViewProps) {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const { 
     viewMode, 
     setViewMode, 
@@ -38,6 +41,15 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
   } = useFileContext();
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  
+  // Générer les initiales pour l'avatar fallback
+  const getInitials = () => {
+    if (!user) return "?";
+    if (user.fullName) {
+      return user.fullName.split(" ").map(name => name[0]).join("").toUpperCase();
+    }
+    return user.username.substring(0, 2).toUpperCase();
+  };
   
   // Handle breadcrumb navigation
   const handleBreadcrumbClick = (id: number | null) => {
@@ -128,12 +140,19 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               <i className="ri-notification-3-line text-neutral-600 text-xl"></i>
             </button>
             <div className="relative ml-2">
-              <button className="flex items-center">
-                <img 
-                  src="https://i.pravatar.cc/150?u=12345" 
-                  alt="User avatar" 
-                  className="w-9 h-9 rounded-full border-2 border-primary-500 object-cover" 
-                />
+              <button 
+                className="flex items-center"
+                onClick={() => {
+                  setActiveModal("profile");
+                  setModalData({});
+                }}
+              >
+                <Avatar className="w-9 h-9 border-2 border-primary-500">
+                  <AvatarImage src={user?.avatarUrl || ""} alt={user?.username || "User"} />
+                  <AvatarFallback className="bg-primary-100 text-primary-700">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
               </button>
             </div>
           </div>
