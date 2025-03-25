@@ -63,27 +63,38 @@ export default function ShareModal() {
 
   // Create share mutation
   const createShareMutation = useMutation({
-    mutationFn: (values: z.infer<typeof shareFileSchema>) => {
-      return apiRequest("POST", "/api/shares", values);
+    mutationFn: async (values: z.infer<typeof shareFileSchema>) => {
+      const response = await apiRequest("POST", "/api/shares", values);
+      const data = await response.json();
+      return data;
     },
     onSuccess: (data) => {
       // Set the share URL from the response
-      setShareUrl(data.shareUrl);
-      
-      toast({
-        title: "Share link created",
-        description: "The share link has been created and copied to clipboard.",
-      });
-      
-      // Copy to clipboard
-      navigator.clipboard.writeText(data.shareUrl).catch(() => {
-        // Clipboard write failed
+      if (data && data.shareUrl) {
+        setShareUrl(data.shareUrl);
+        
         toast({
-          title: "Copy failed",
-          description: "Could not copy to clipboard. Please copy the link manually.",
+          title: "Share link created",
+          description: "The share link has been created and copied to clipboard.",
+        });
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(data.shareUrl).catch(() => {
+          // Clipboard write failed
+          toast({
+            title: "Copy failed",
+            description: "Could not copy to clipboard. Please copy the link manually.",
+            variant: "destructive",
+          });
+        });
+      } else {
+        console.error("Share URL is missing from response:", data);
+        toast({
+          title: "Share link issue",
+          description: "The share link was created but the URL could not be generated properly.",
           variant: "destructive",
         });
-      });
+      }
     },
     onError: (error) => {
       toast({
