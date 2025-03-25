@@ -111,21 +111,42 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
 
   return (
     <main 
-      className="flex-1 overflow-y-auto bg-white" 
+      className="flex-1 overflow-y-auto" 
       onDragOver={(e) => {
         e.preventDefault();
         setIsDragging(true);
       }}
     >
       {/* Header with search and user info */}
-      <header className="border-b border-neutral-200 bg-white shadow-sm z-10">
+      <header className="border-b border-gray-700/30 gradient-card rounded-none shadow-lg z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center">
-            <div className="text-primary-500 text-3xl mr-2">
-              <i className="ri-folder-cloud-line"></i>
+          <div className="flex items-center hover-float">
+            <div className="text-blue-400 text-3xl mr-2">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path 
+                  d="M12 2L20 8V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V8L12 2Z" 
+                  stroke="url(#logo-gradient)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+                <path 
+                  d="M16 14C16 15.0609 15.5786 16.0783 14.8284 16.8284C14.0783 17.5786 13.0609 18 12 18C10.9391 18 9.92172 17.5786 9.17157 16.8284C8.42143 16.0783 8 15.0609 8 14" 
+                  stroke="url(#logo-gradient)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+                <defs>
+                  <linearGradient id="logo-gradient" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#3b82f6" />
+                    <stop offset="1" stopColor="#6366f1" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
-            <h1 className="text-xl font-bold text-neutral-800">DropStore</h1>
+            <h1 className="text-xl font-bold gradient-heading text-glow">DropStore</h1>
           </div>
 
           {/* Search */}
@@ -133,23 +154,30 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
 
           {/* User Actions */}
           <div className="flex items-center">
-            <button className="p-2 rounded-full hover:bg-neutral-100 md:hidden mr-1" title="Search">
-              <i className="ri-search-line text-neutral-600 text-xl"></i>
+            <button className="p-2 rounded-full hover:bg-gray-800/40 transition-colors md:hidden mr-2" title="Search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="text-gray-300">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
             </button>
-            <button className="p-2 rounded-full hover:bg-neutral-100 mr-1" title="Notifications">
-              <i className="ri-notification-3-line text-neutral-600 text-xl"></i>
+            <button className="p-2 rounded-full hover:bg-gray-800/40 transition-colors mr-2 relative" title="Notifications">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="text-gray-300">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+              </svg>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
             </button>
             <div className="relative ml-2">
               <button 
-                className="flex items-center"
+                className="flex items-center hover-float"
                 onClick={() => {
                   setActiveModal("profile");
                   setModalData({});
                 }}
               >
-                <Avatar className="w-9 h-9 border-2 border-primary-500">
+                <Avatar className="w-9 h-9 glowing-border">
                   <AvatarImage src={user?.avatarUrl || ""} alt={user?.username || "User"} />
-                  <AvatarFallback className="bg-primary-100 text-primary-700">
+                  <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
                     {getInitials()}
                   </AvatarFallback>
                 </Avatar>
@@ -160,27 +188,27 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       </header>
 
       {/* Breadcrumb & Tools */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 border-b border-neutral-200 bg-white sticky top-0 z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10">
         <div className="flex items-center mb-3 sm:mb-0">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-1 text-sm">
             <button 
               onClick={() => handleBreadcrumbClick(null)} 
-              className="text-neutral-600 hover:text-primary-500"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors hover-float"
             >
-              Home
+              Accueil
             </button>
             
             {isLoading ? (
-              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-24 bg-gray-700/50" />
             ) : data?.breadcrumbs && section === 'folder' ? (
               data.breadcrumbs.slice(1).map((crumb: any, index: number) => (
                 <React.Fragment key={crumb.id}>
-                  <span className="text-neutral-400">/</span>
+                  <span className="text-gray-500">/</span>
                   <button 
                     onClick={() => handleBreadcrumbClick(crumb.id)} 
-                    className={`hover:text-primary-500 ${
-                      index === data.breadcrumbs.length - 2 ? "font-medium text-neutral-800" : "text-neutral-600"
+                    className={`hover:text-blue-300 transition-colors hover-float ${
+                      index === data.breadcrumbs.length - 2 ? "font-medium text-gray-200" : "text-blue-400"
                     }`}
                   >
                     {crumb.name}
@@ -189,8 +217,8 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               ))
             ) : section !== 'home' ? (
               <>
-                <span className="text-neutral-400">/</span>
-                <span className="font-medium text-neutral-800">
+                <span className="text-gray-500">/</span>
+                <span className="font-medium text-gray-200">
                   {section.charAt(0).toUpperCase() + section.slice(1)}
                 </span>
               </>
@@ -199,30 +227,30 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center">
+        <div className="flex items-center space-x-3">
           {/* View Toggle */}
-          <div className="mr-2 border border-neutral-300 rounded-lg flex">
+          <div className="border border-gray-700/50 rounded-lg flex bg-gray-900/30 backdrop-blur-sm shadow-inner overflow-hidden">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setViewMode("grid")}
-              className={`px-3 py-1.5 focus:outline-none ${
-                viewMode === "grid" ? "bg-neutral-100 text-neutral-800" : "bg-white text-neutral-600"
-              }`}
-              title="Grid view"
+              className={`px-3 py-1.5 focus:ring-0 focus:ring-offset-0 ${
+                viewMode === "grid" ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-300" : "bg-transparent text-gray-400 hover:text-gray-300 hover:bg-gray-800/30"
+              } transition-all duration-300`}
+              title="Vue en grille"
             >
-              <Grid size={16} />
+              <Grid size={16} className="floating-element" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setViewMode("list")}
-              className={`px-3 py-1.5 focus:outline-none ${
-                viewMode === "list" ? "bg-neutral-100 text-neutral-800" : "bg-white text-neutral-600"
-              }`}
-              title="List view"
+              className={`px-3 py-1.5 focus:ring-0 focus:ring-offset-0 ${
+                viewMode === "list" ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-300" : "bg-transparent text-gray-400 hover:text-gray-300 hover:bg-gray-800/30"
+              } transition-all duration-300`}
+              title="Vue en liste"
             >
-              <List size={16} />
+              <List size={16} className="floating-element" />
             </Button>
           </div>
 
@@ -230,37 +258,37 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
           <DropdownMenu open={sortMenuOpen} onOpenChange={setSortMenuOpen}>
             <DropdownMenuTrigger asChild>
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 size="sm" 
-                className="mr-2"
-                title="Sort"
+                className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
+                title="Trier"
               >
                 <SortDesc size={16} className="mr-1" />
-                <span className="ml-1 hidden sm:inline">Sort</span>
+                <span className="ml-1 hidden sm:inline">Trier</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="gradient-card border-gray-700/50">
               <DropdownMenuItem 
                 onClick={() => setSortBy("name")}
-                className={sortBy === "name" ? "text-primary-500 font-medium" : ""}
+                className={sortBy === "name" ? "text-blue-400 font-medium" : "text-gray-300 hover:bg-gray-800/60"}
               >
-                Name
+                Nom
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => setSortBy("modified")}
-                className={sortBy === "modified" ? "text-primary-500 font-medium" : ""}
+                className={sortBy === "modified" ? "text-blue-400 font-medium" : "text-gray-300 hover:bg-gray-800/60"}
               >
-                Date modified
+                Date de modification
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => setSortBy("size")}
-                className={sortBy === "size" ? "text-primary-500 font-medium" : ""}
+                className={sortBy === "size" ? "text-blue-400 font-medium" : "text-gray-300 hover:bg-gray-800/60"}
               >
-                Size
+                Taille
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => setSortBy("type")}
-                className={sortBy === "type" ? "text-primary-500 font-medium" : ""}
+                className={sortBy === "type" ? "text-blue-400 font-medium" : "text-gray-300 hover:bg-gray-800/60"}
               >
                 Type
               </DropdownMenuItem>
@@ -269,23 +297,22 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
 
           {/* New Folder */}
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="mr-2" 
+            className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
             onClick={() => {
               setActiveModal("newFolder");
               setModalData({ folderId: folderId ? parseInt(folderId) : null });
             }}
           >
-            <FolderPlus size={16} className="mr-1" />
-            <span className="ml-1 hidden sm:inline">New folder</span>
+            <FolderPlus size={16} className="mr-1 text-blue-400" />
+            <span className="ml-1 hidden sm:inline">Nouveau dossier</span>
           </Button>
 
           {/* Mobile Upload Button */}
           <Button 
-            variant="primary" 
-            size="sm" 
-            className="md:hidden" 
+            className="md:hidden gradient-button hover-float"
+            size="sm"
             onClick={() => {
               setActiveModal("upload");
               setModalData({ folderId: folderId ? parseInt(folderId) : null });
@@ -300,41 +327,68 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       {isDragging && (
         <div 
           ref={dropzoneRef}
-          className="dropzone p-6 m-4 flex flex-col items-center justify-center bg-white rounded-lg border-2 border-dashed border-primary-500 transition-all"
+          className="dropzone p-6 m-4 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-blue-500 bg-gray-900/60 backdrop-blur-lg transition-all"
           onDragOver={(e) => e.preventDefault()}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleFileDrop}
         >
-          <div className="text-5xl text-primary-500 mb-4">
-            <i className="ri-upload-cloud-line"></i>
+          <div className="mb-4 floating-element">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path 
+                d="M12 2L20 8V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V8L12 2Z" 
+                stroke="url(#upload-gradient)" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M12 15V9" 
+                stroke="url(#upload-gradient)" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M8 12L12 8L16 12" 
+                stroke="url(#upload-gradient)" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <defs>
+                <linearGradient id="upload-gradient" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#3b82f6" />
+                  <stop offset="1" stopColor="#6366f1" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-          <h3 className="text-xl font-medium text-neutral-800 mb-2">Drop your files here</h3>
-          <p className="text-neutral-600 mb-4 text-center">Files will be uploaded to the current folder</p>
-          <p className="text-sm text-neutral-500">or</p>
+          <h3 className="text-xl font-medium text-blue-300 mb-2 text-glow">Déposez vos fichiers ici</h3>
+          <p className="text-gray-300 mb-4 text-center">Les fichiers seront téléchargés dans le dossier actuel</p>
+          <div className="w-full max-w-xs h-[1px] bg-gradient-to-r from-transparent via-gray-700 to-transparent my-4"></div>
           <Button 
-            variant="primary" 
-            className="mt-4"
+            className="mt-2 gradient-button hover:scale-105 transition-transform"
             onClick={() => {
               setActiveModal("upload");
               setModalData({ folderId: folderId ? parseInt(folderId) : null });
             }}
           >
-            Select files
+            Sélectionner des fichiers
           </Button>
         </div>
       )}
       
       {/* Files and Folders Content */}
-      <div className="p-4">
+      <div className="p-6">
         {isLoading ? (
           // Loading skeleton
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {Array.from({ length: 10 }).map((_, index) => (
-              <div key={index} className="border border-neutral-200 rounded-lg overflow-hidden">
-                <Skeleton className="aspect-square bg-neutral-100" />
+              <div key={index} className="gradient-card rounded-lg overflow-hidden animate-pulse">
+                <div className="aspect-square bg-gray-800/50"></div>
                 <div className="p-3">
-                  <Skeleton className="h-4 w-3/4 mb-2" />
-                  <Skeleton className="h-3 w-1/2" />
+                  <div className="h-4 w-3/4 mb-2 bg-gray-700/70 rounded"></div>
+                  <div className="h-3 w-1/2 bg-gray-700/50 rounded"></div>
                 </div>
               </div>
             ))}
@@ -342,50 +396,75 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
         ) : error ? (
           // Error state
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="text-6xl text-neutral-300 mb-4">
-              <i className="ri-error-warning-line"></i>
+            <div className="text-6xl text-blue-500/30 mb-6 floating-element">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="url(#error-gradient)" strokeWidth="2" />
+                <path d="M12 8V12" stroke="url(#error-gradient)" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="12" cy="16" r="1" fill="url(#error-gradient)" />
+                <defs>
+                  <linearGradient id="error-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#3b82f6" />
+                    <stop offset="1" stopColor="#6366f1" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
-            <h3 className="text-xl font-medium text-neutral-700 mb-2">Something went wrong</h3>
-            <p className="text-neutral-500 mb-6 max-w-md">
-              {error.message || "We couldn't load your files. Please try again later."}
+            <h3 className="text-xl font-medium text-blue-300 mb-2 text-glow">Une erreur est survenue</h3>
+            <p className="text-gray-300 mb-6 max-w-md">
+              {error.message || "Nous n'avons pas pu charger vos fichiers. Veuillez réessayer plus tard."}
             </p>
             <Button 
-              variant="primary"
+              className="gradient-button hover-float"
               onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/folders"] })}
             >
-              Try again
+              Réessayer
             </Button>
           </div>
         ) : sortedData.folders.length === 0 && sortedData.files.length === 0 ? (
           // Empty state
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="text-6xl text-neutral-300 mb-4">
-              <i className="ri-folder-open-line"></i>
+            <div className="text-6xl text-blue-500/30 mb-6 floating-element">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path 
+                  d="M22 19C22 19.5304 21.7893 20.0391 21.4142 20.4142C21.0391 20.7893 20.5304 21 20 21H4C3.46957 21 2.96086 20.7893 2.58579 20.4142C2.21071 20.0391 2 19.5304 2 19V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H9L11 6H20C20.5304 6 21.0391 6.21071 21.4142 6.58579C21.7893 6.96086 22 7.46957 22 8V19Z" 
+                  stroke="url(#empty-gradient)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+                <defs>
+                  <linearGradient id="empty-gradient" x1="2" y1="3" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#3b82f6" />
+                    <stop offset="1" stopColor="#6366f1" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
-            <h3 className="text-xl font-medium text-neutral-700 mb-2">This folder is empty</h3>
-            <p className="text-neutral-500 mb-6 max-w-md">
-              Upload files or create a new folder to start organizing your documents.
+            <h3 className="text-xl font-medium text-blue-300 mb-2 text-glow">Ce dossier est vide</h3>
+            <p className="text-gray-300 mb-6 max-w-md">
+              Téléchargez des fichiers ou créez un nouveau dossier pour commencer à organiser vos documents.
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-4">
               <Button 
-                variant="primary" 
+                className="gradient-button hover-float"
                 onClick={() => {
                   setActiveModal("upload");
                   setModalData({ folderId: folderId ? parseInt(folderId) : null });
                 }}
               >
-                <i className="ri-upload-cloud-line mr-1"></i>
-                Upload files
+                <Upload size={16} className="mr-2" />
+                Télécharger des fichiers
               </Button>
               <Button 
-                variant="outline" 
+                variant="ghost"
+                className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
                 onClick={() => {
                   setActiveModal("newFolder");
                   setModalData({ folderId: folderId ? parseInt(folderId) : null });
                 }}
               >
-                <i className="ri-folder-add-line mr-1"></i>
-                New folder
+                <FolderPlus size={16} className="mr-2 text-blue-400" />
+                Nouveau dossier
               </Button>
             </div>
           </div>
