@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -8,7 +8,9 @@ import {
   renameItemSchema, 
   moveItemSchema, 
   deleteItemSchema, 
-  searchSchema 
+  searchSchema,
+  registerSchema,
+  loginSchema
 } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -16,6 +18,7 @@ import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from "@shared/validation";
 import { log } from "./vite";
+import { setupAuth, hashPassword } from "./auth";
 
 // Configure multer for file storage
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -54,19 +57,105 @@ const upload = multer({
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
-  // Get current user (for demo purposes we'll use a fixed user ID)
-  const DEFAULT_USER_ID = 1;
+  // Setup authentication
+  setupAuth(app);
 
-  // Middleware to set user ID
+  // Authentication middleware
+  const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    return res.status(401).json({ message: "Authentication required" });
+  };
+
+  // Middleware to set user ID from session
   app.use((req, _res, next) => {
-    (req as any).userId = DEFAULT_USER_ID;
+    if (req.isAuthenticated() && req.user) {
+      (req as any).userId = req.user.id;
+    }
     next();
+  });
+  
+  // ===== Auth API Routes =====
+  
+  // Register a new user
+  app.post("/api/register", async (req: Request, res: Response) => {
+    try {
+      const validatedData = registerSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(validatedData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      
+      // Create user
+      const user = await storage.createUser({
+        ...validatedData,
+        password: await hashPassword(validatedData.password),
+      });
+      
+      // Log in the user
+      req.login(user, (err) => {
+        if (err) {
+          log(`Login error after registration: ${err}`, 'auth');
+          return res.status(500).json({ message: "Failed to login after registration" });
+        }
+        const { password, ...userWithoutPassword } = user;
+        return res.status(201).json(userWithoutPassword);
+      });
+    } catch (error: any) {
+      log(`Registration error: ${error}`, 'auth');
+      return res.status(400).json({ message: error.message || "Failed to register" });
+    }
+  });
+  
+  // Login
+  app.post("/api/login", (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validatedData = loginSchema.parse(req.body);
+      
+      // Use passport middleware for authentication
+      passport.authenticate('local', (err: any, user: any, info: any) => {
+        if (err) {
+          log(`Authentication error: ${err}`, 'auth');
+          return res.status(500).json({ message: "Authentication failed" });
+        }
+        
+        if (!user) {
+          return res.status(401).json({ message: info?.message || "Invalid credentials" });
+        }
+        
+        // Establish session
+        req.login(user, (err) => {
+          if (err) {
+            log(`Login error: ${err}`, 'auth');
+            return res.status(500).json({ message: "Failed to login" });
+          }
+          return res.json(user);
+        });
+      })(req, res, next);
+    } catch (error: any) {
+      log(`Login validation error: ${error}`, 'auth');
+      return res.status(400).json({ message: error.message || "Invalid login data" });
+    }
+  });
+  
+  // Logout
+  app.post("/api/logout", (req: Request, res: Response) => {
+    req.logout((err) => {
+      if (err) {
+        log(`Logout error: ${err}`, 'auth');
+        return res.status(500).json({ message: "Failed to logout" });
+      }
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
   });
 
   // ===== User API Routes =====
   
   // Get user profile
-  app.get("/api/user", async (req: Request, res: Response) => {
+  app.get("/api/user", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
@@ -85,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get user storage stats
-  app.get("/api/user/storage", async (req: Request, res: Response) => {
+  app.get("/api/user/storage", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
