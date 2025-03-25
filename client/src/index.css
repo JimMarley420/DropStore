@@ -200,6 +200,7 @@
   
   .glowing-border {
     position: relative;
+    z-index: 0;
   }
   
   .glowing-border::after {
@@ -216,6 +217,8 @@
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
     animation: pulse 4s ease-in-out infinite;
+    z-index: -1;
+    pointer-events: none;
   }
   
   .text-glow {
