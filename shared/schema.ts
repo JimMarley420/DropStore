@@ -9,14 +9,36 @@ export const filePermissionEnum = pgEnum('file_permission', ['view', 'edit', 'fu
 // Enum for file status
 export const fileStatusEnum = pgEnum('file_status', ['active', 'trashed', 'deleted']);
 
+// Enum for theme appearance
+export const themeAppearanceEnum = pgEnum('theme_appearance', ['light', 'dark', 'system']);
+
+// Enum for theme variant
+export const themeVariantEnum = pgEnum('theme_variant', ['professional', 'tint', 'vibrant']);
+
 // Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  fullName: text("full_name"),
   password: text("password").notNull(),
   storageUsed: integer("storage_used").notNull().default(0),
   storageLimit: integer("storage_limit").notNull().default(100 * 1024 * 1024 * 1024), // 100GB default
-  createdAt: timestamp("created_at").defaultNow()
+  avatarUrl: text("avatar_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+// User themes table
+export const userThemes = pgTable("user_themes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  primaryColor: text("primary_color").notNull().default("#4f46e5"),
+  appearance: themeAppearanceEnum("appearance").default("system").notNull(),
+  variant: themeVariantEnum("variant").default("professional").notNull(),
+  radius: integer("radius").notNull().default(8),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
 });
 
 // Folders table
@@ -64,7 +86,36 @@ export const shares = pgTable("shares", {
 // Validation schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
+  email: true,
+  fullName: true,
   password: true,
+});
+
+// User theme schema
+export const insertUserThemeSchema = createInsertSchema(userThemes).pick({
+  userId: true,
+  primaryColor: true,
+  appearance: true,
+  variant: true,
+  radius: true,
+});
+
+// Login schema
+export const loginSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+// Register schema with validation
+export const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  fullName: z.string().optional(),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 export const insertFolderSchema = createInsertSchema(folders).pick({
@@ -149,6 +200,14 @@ export type InsertFile = z.infer<typeof insertFileSchema>;
 export type Share = typeof shares.$inferSelect;
 export type InsertShare = z.infer<typeof insertShareSchema>;
 
+// Schéma pour la personnalisation du thème
+export const updateUserThemeSchema = z.object({
+  primaryColor: z.string().regex(/^#([0-9A-F]{6})$/i, "Must be a valid hex color code"),
+  appearance: themeAppearanceEnum._type,
+  variant: themeVariantEnum._type,
+  radius: z.number().min(0).max(24),
+});
+
 // Extended types for frontend
 export type FileWithPath = File & { 
   breadcrumbs: Array<{ id: number; name: string }>;
@@ -159,6 +218,10 @@ export type FolderWithPath = Folder & {
   breadcrumbs: Array<{ id: number; name: string }>;
   itemCount: number;
 };
+
+export type UserTheme = typeof userThemes.$inferSelect;
+export type InsertUserTheme = z.infer<typeof insertUserThemeSchema>;
+export type UpdateUserTheme = z.infer<typeof updateUserThemeSchema>;
 
 // ValidationSchema
 export const validation = {
