@@ -58,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (userData: InsertUser) => {
+      // Assurons-nous que les données sont conformes au schéma d'insertion
       const validatedData = insertUserSchema.parse(userData);
       const res = await apiRequest("POST", "/api/register", validatedData);
       return await res.json();

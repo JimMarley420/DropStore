@@ -196,7 +196,9 @@ function RegisterForm() {
   });
 
   function onSubmit(values: z.infer<typeof registerSchema>) {
-    registerMutation.mutate(values);
+    // Nous supprimons confirmPassword car il n'est pas attendu par le serveur
+    const { confirmPassword, ...userData } = values;
+    registerMutation.mutate(userData);
   }
 
   return (
@@ -255,6 +257,19 @@ function RegisterForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmer le mot de passe</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} />
                   </FormControl>
