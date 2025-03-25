@@ -45,20 +45,60 @@ export default function AuthPage() {
       <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card">
         <div className="max-w-md w-full px-4">
           <div className="mb-8 text-center">
-            <h1 className="gradient-heading text-3xl font-bold mb-2">DropStore</h1>
-            <p className="text-muted-foreground">Votre espace de stockage cloud sécurisé</p>
+            <div className="mb-6 floating-element">
+              <svg
+                width="80"
+                height="80"
+                viewBox="0 0 80 80"
+                fill="none"
+                className="mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="40" cy="40" r="38" stroke="url(#logo-gradient)" strokeWidth="4" />
+                <path
+                  d="M28 52L40 28L52 52H28Z"
+                  stroke="url(#logo-gradient)"
+                  strokeWidth="3"
+                  fill="none"
+                />
+                <defs>
+                  <linearGradient id="logo-gradient" x1="10" y1="10" x2="70" y2="70" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#3b82f6" />
+                    <stop offset="1" stopColor="#6366f1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <h1 className="gradient-heading text-3xl font-bold mb-2 text-glow">DropStore</h1>
+            <p className="text-blue-300">Le futur du stockage en ligne est ici</p>
           </div>
-          <Tabs defaultValue="login" value={tab} onValueChange={(value) => setTab(value as AuthTab)}>
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="login">Connexion</TabsTrigger>
-              <TabsTrigger value="register">Inscription</TabsTrigger>
+          
+          <Tabs 
+            defaultValue="login" 
+            value={tab}
+            onValueChange={(value) => setTab(value as AuthTab)}
+            className="glowing-border rounded-md p-1"
+          >
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-900/40">
+              <TabsTrigger 
+                value="login" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/30 data-[state=active]:to-indigo-600/30 data-[state=active]:text-blue-300"
+              >
+                Connexion
+              </TabsTrigger>
+              <TabsTrigger 
+                value="register" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/30 data-[state=active]:to-indigo-600/30 data-[state=active]:text-blue-300"
+              >
+                Inscription
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login">
+            <TabsContent value="login" className="hover-float">
               <LoginForm />
             </TabsContent>
             
-            <TabsContent value="register">
+            <TabsContent value="register" className="hover-float">
               <RegisterForm />
             </TabsContent>
           </Tabs>
@@ -67,24 +107,57 @@ export default function AuthPage() {
 
       {/* Hero section */}
       <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-10">
-        <div className="max-w-xl relative z-10">
-          <h1 className="text-4xl font-bold mb-6 gradient-heading">DropStore</h1>
-          <h2 className="text-2xl font-semibold mb-4">Stockez, partagez et accédez à vos fichiers où que vous soyez</h2>
-          <p className="mb-6 text-lg opacity-90">
-            Une solution de stockage en ligne sécurisée et facile à utiliser pour tous vos documents, photos, vidéos et plus encore.
-          </p>
-          <ul className="space-y-3">
-            <li className="flex items-center">
-              <CheckIcon className="mr-2 text-blue-400" /> Stockage sécurisé pour tous vos fichiers
+        <div className="max-w-xl relative z-10 glowing-border p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
+          <h1 className="text-4xl font-bold mb-6 gradient-heading text-glow">
+            DropStore <span className="text-lg font-light text-blue-300 ml-2">v1.0</span>
+          </h1>
+          <h2 className="text-2xl font-semibold mb-6 text-blue-300">Interface futuriste. Performance ultra-rapide.</h2>
+          
+          <div className="relative my-8">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-md transform -rotate-1"></div>
+            <p className="relative z-10 p-4 text-lg text-gray-100 bg-gray-900/60 backdrop-blur-sm rounded-md">
+              Une solution de stockage en ligne de nouvelle génération pour tous vos documents, 
+              photos, vidéos et plus encore.
+            </p>
+          </div>
+          
+          <ul className="space-y-4 relative mt-8">
+            <div className="absolute h-full w-1 bg-gradient-to-b from-blue-500/40 to-indigo-500/40 left-[7px] top-1 rounded-full"></div>
+            <li className="flex items-start pl-6 hover-float">
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
+              </div>
+              <div>
+                <span className="text-blue-300 font-medium">Stockage sécurisé</span>
+                <p className="text-sm text-gray-300">Protection de niveau entreprise pour vos données</p>
+              </div>
             </li>
-            <li className="flex items-center">
-              <CheckIcon className="mr-2 text-blue-400" /> Partage facile avec vos amis et collègues
+            <li className="flex items-start pl-6 hover-float">
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
+              </div>
+              <div>
+                <span className="text-blue-300 font-medium">Partage intelligent</span>
+                <p className="text-sm text-gray-300">Contrôlez qui peut voir et modifier vos fichiers</p>
+              </div>
             </li>
-            <li className="flex items-center">
-              <CheckIcon className="mr-2 text-blue-400" /> Accès depuis n'importe quel appareil
+            <li className="flex items-start pl-6 hover-float">
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
+              </div>
+              <div>
+                <span className="text-blue-300 font-medium">Multi-plateforme</span>
+                <p className="text-sm text-gray-300">Accédez à vos fichiers depuis n'importe quel appareil</p>
+              </div>
             </li>
-            <li className="flex items-center">
-              <CheckIcon className="mr-2 text-blue-400" /> Sauvegarde automatique de vos données
+            <li className="flex items-start pl-6 hover-float">
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
+              </div>
+              <div>
+                <span className="text-blue-300 font-medium">Synchronisation en temps réel</span>
+                <p className="text-sm text-gray-300">Modifications instantanément reflétées partout</p>
+              </div>
             </li>
           </ul>
         </div>
