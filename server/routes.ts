@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from "@shared/validation";
 import { log } from "./vite";
 import { setupAuth, hashPassword } from "./auth";
+import passport from "passport";
 
 // Configure multer for file storage
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -189,7 +190,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== Folder API Routes =====
   
   // Get folder contents (folders and files)
-  app.get("/api/folders/:folderId?/contents", async (req: Request, res: Response) => {
+  app.get("/api/folders/:folderId?/contents", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const folderId = req.params.folderId ? parseInt(req.params.folderId) : null;
     
@@ -216,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Create a new folder
-  app.post("/api/folders", async (req: Request, res: Response) => {
+  app.post("/api/folders", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
@@ -323,7 +324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== File API Routes =====
   
   // Upload a file
-  app.post("/api/files/upload", upload.single("file"), async (req: Request, res: Response) => {
+  app.post("/api/files/upload", isAuthenticated, upload.single("file"), async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
