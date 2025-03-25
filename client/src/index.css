@@ -201,6 +201,7 @@
   .glowing-border-container {
     position: relative;
     z-index: 1;
+    pointer-events: auto;
   }
   
   .glowing-border {
@@ -209,7 +210,7 @@
     left: -1px;
     right: -1px;
     bottom: -1px;
-    z-index: -1;
+    z-index: 0;
     border-radius: inherit;
     pointer-events: none;
   }
