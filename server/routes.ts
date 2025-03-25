@@ -383,6 +383,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/files/:id", async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const fileId = parseInt(req.params.id);
+    const shareToken = req.query.token as string | undefined;
     
     try {
       const file = await storage.getFileById(fileId);
@@ -390,13 +391,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "File not found" });
       }
       
-      // Verify file belongs to user
-      if (file.userId !== userId) {
-        return res.status(403).json({ message: "You don't have access to this file" });
+      // If a share token is provided, verify it
+      if (shareToken) {
+        const share = await storage.getShareByToken(shareToken);
+        
+        // Check if share is valid
+        if (!share) {
+          return res.status(404).json({ message: "Share not found or has expired" });
+        }
+        
+        // Check if share has expired
+        if (share.expiresAt && new Date(share.expiresAt) < new Date()) {
+          return res.status(410).json({ message: "Share link has expired" });
+        }
+        
+        // Check if password is required and provided
+        if (share.password) {
+          const providedPassword = req.query.password as string | undefined;
+          
+          if (!providedPassword) {
+            return res.status(401).json({ message: "Password required", passwordRequired: true });
+          }
+          
+          if (providedPassword !== share.password) {
+            return res.status(401).json({ message: "Invalid password" });
+          }
+        }
+        
+        // Check if the file is in the shared folder or is directly shared
+        const isSharedFile = share.fileId === fileId;
+        const isInSharedFolder = share.folderId && file.folderId === share.folderId;
+        
+        if (!isSharedFile && !isInSharedFolder) {
+          return res.status(403).json({ message: "File is not part of this share" });
+        }
+      } else {
+        // No share token, verify file belongs to the authenticated user
+        if (!userId) {
+          return res.status(401).json({ message: "Authentication required" });
+        }
+        
+        if (file.userId !== userId) {
+          return res.status(403).json({ message: "You don't have access to this file" });
+        }
       }
       
       return res.json(file);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching file:", error);
       return res.status(500).json({ message: "Failed to fetch file" });
     }
@@ -406,6 +447,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/files/:id/content", async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const fileId = parseInt(req.params.id);
+    const shareToken = req.query.token as string | undefined;
     
     try {
       const file = await storage.getFileById(fileId);
@@ -413,9 +455,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "File not found" });
       }
       
-      // Verify file belongs to user
-      if (file.userId !== userId) {
-        return res.status(403).json({ message: "You don't have access to this file" });
+      // If a share token is provided, verify it
+      if (shareToken) {
+        const share = await storage.getShareByToken(shareToken);
+        
+        // Check if share is valid
+        if (!share) {
+          return res.status(404).json({ message: "Share not found or has expired" });
+        }
+        
+        // Check if share has expired
+        if (share.expiresAt && new Date(share.expiresAt) < new Date()) {
+          return res.status(410).json({ message: "Share link has expired" });
+        }
+        
+        // Check if password is required and provided
+        if (share.password) {
+          const providedPassword = req.query.password as string | undefined;
+          
+          if (!providedPassword) {
+            return res.status(401).json({ message: "Password required", passwordRequired: true });
+          }
+          
+          if (providedPassword !== share.password) {
+            return res.status(401).json({ message: "Invalid password" });
+          }
+        }
+        
+        // Check if the file is in the shared folder or is directly shared
+        const isSharedFile = share.fileId === fileId;
+        const isInSharedFolder = share.folderId && file.folderId === share.folderId;
+        
+        if (!isSharedFile && !isInSharedFolder) {
+          return res.status(403).json({ message: "File is not part of this share" });
+        }
+        
+        // For shared files, add appropriate security headers
+        res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+      } else {
+        // No share token, verify file belongs to the authenticated user
+        if (!userId) {
+          return res.status(401).json({ message: "Authentication required" });
+        }
+        
+        if (file.userId !== userId) {
+          return res.status(403).json({ message: "You don't have access to this file" });
+        }
       }
       
       // Construct full file path
@@ -435,7 +522,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Stream file to response
       const fileStream = fs.createReadStream(filePath);
       fileStream.pipe(res);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error streaming file:", error);
       return res.status(500).json({ message: "Failed to stream file" });
     }

@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import AuthPage from "@/pages/auth-page";
+import SharePage from "@/pages/SharePage";
+import SharedFileView from "@/pages/SharedFileView";
 import { FileContextProvider } from "@/context/FileContext";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -19,6 +21,9 @@ function Router() {
       <ProtectedRoute path="/favorites" component={Home} />
       <ProtectedRoute path="/trash" component={Home} />
       <Route path="/auth" component={AuthPage} />
+      {/* Routes de partage publiques (non protégées) */}
+      <Route path="/share/:token" component={SharePage} />
+      <Route path="/share/:token/file/:fileId" component={SharedFileView} />
       <Route component={NotFound} />
     </Switch>
   );
