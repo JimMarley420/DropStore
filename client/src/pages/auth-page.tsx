@@ -42,7 +42,7 @@ export default function AuthPage() {
   return (
     <div className="flex h-screen">
       {/* Authentication forms */}
-      <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card z-20">
+      <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card">
         <div className="max-w-md w-full px-4">
           <div className="mb-8 text-center">
             <div className="mb-6 floating-element">
@@ -106,8 +106,8 @@ export default function AuthPage() {
       </div>
 
       {/* Hero section */}
-      <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-0">
-        <div className="max-w-xl relative z-1 p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
+      <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-10">
+        <div className="max-w-xl relative z-10 glowing-border p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
           <h1 className="text-4xl font-bold mb-6 gradient-heading text-glow">
             DropStore <span className="text-lg font-light text-blue-300 ml-2">v1.0</span>
           </h1>

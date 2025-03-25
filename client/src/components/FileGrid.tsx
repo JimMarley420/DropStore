@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useFileContext } from "@/context/FileContext";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { formatFileSize, formatDate, getFileIcon } from "@/lib/file-utils";
-import { MoreHorizontal, Download, Share, Star, StarOff, Trash2 } from "lucide-react";
+import { MoreHorizontal, Download, Share, Star, StarOff } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -109,32 +109,6 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
       });
     }
   };
-  
-  // Delete file
-  const handleDelete = async (file: FileWithPath, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    try {
-      await apiRequest('DELETE', `/api/files/${file.id}`, {});
-      
-      // Invalider la requête appropriée selon la section
-      if (section === "trash") {
-        queryClient.invalidateQueries({ queryKey: ['/api/trash'] });
-      } else {
-        queryClient.invalidateQueries({ queryKey: ['/api/folders'] });
-      }
-      
-      toast({
-        title: "Fichier supprimé",
-        description: `${file.name} a été déplacé vers la corbeille.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Échec de la suppression",
-        description: "Impossible de supprimer le fichier. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -231,29 +205,22 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
               <button
                 onClick={(e) => handleDownload(file, e)}
                 className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
-                title="Télécharger"
+                title="Download"
               >
                 <Download size={16} />
               </button>
               <button
                 onClick={(e) => handleShare(file, e)}
                 className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
-                title="Partager"
+                title="Share"
               >
                 <Share size={16} />
-              </button>
-              <button
-                onClick={(e) => handleDelete(file, e)}
-                className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600 text-red-500"
-                title="Supprimer"
-              >
-                <Trash2 size={16} />
               </button>
               {section === "trash" ? (
                 <button
                   onClick={(e) => handleRestore(file, e)}
                   className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
-                  title="Restaurer"
+                  title="Restore"
                 >
                   <i className="ri-refresh-line text-sm"></i>
                 </button>
@@ -261,7 +228,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                 <button
                   onClick={(e) => toggleFavorite(file, e)}
                   className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
-                  title={file.favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  title={file.favorite ? "Remove from favorites" : "Add to favorites"}
                 >
                   {file.favorite ? <StarOff size={16} /> : <Star size={16} />}
                 </button>
