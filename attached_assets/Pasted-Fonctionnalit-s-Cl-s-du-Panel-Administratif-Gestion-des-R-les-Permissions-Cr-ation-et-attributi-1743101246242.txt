@@ -1,0 +1,64 @@
+Fonctionnalités Clés du Panel Administratif
+Gestion des Rôles & Permissions :
+
+Création et attribution d’un rôle "Admin" ayant un accès complet au panel.
+
+Possibilité de créer des sous-rôles (ex : Modérateur, Super Admin) pour une granularité des droits.
+
+Système de permissions détaillé pour contrôler qui peut consulter, modifier ou supprimer les fichiers et gérer les utilisateurs.
+
+Interface Utilisateur (UX) :
+
+Design moderne et responsive, avec une interface claire et intuitive.
+
+Interface dédiée avec un tableau de bord affichant en temps réel les statistiques du système (nombre total de fichiers, espace utilisé, nombre d’utilisateurs actifs, etc.).
+
+Chaque bouton et chaque action (ex : bannir un utilisateur, supprimer un fichier, modifier des paramètres) doit être relié au backend et vérifier automatiquement que l’action s’exécute correctement.
+
+Boutons de validation, de confirmation et de retour d’information visuel et sonore pour garantir que chaque opération a bien été effectuée.
+
+Gestion des Utilisateurs :
+
+Liste complète des utilisateurs inscrits avec filtres avancés (ID, email, date d’inscription, espace utilisé, etc.).
+
+Possibilité d’effectuer des actions telles que banir, suspendre ou supprimer un utilisateur (avec historique des actions).
+
+Option pour réinitialiser des mots de passe et modifier les rôles d’un utilisateur directement depuis le panel.
+
+Journal des connexions et des activités de chaque utilisateur pour une surveillance sécurisée.
+
+Gestion des Fichiers :
+
+Visualisation détaillée des fichiers stockés avec informations sur le nom, la taille, la date d’upload et le propriétaire.
+
+Actions de gestion des fichiers : suppression, restauration, modification de la durée de stockage, forçage de l’expiration.
+
+Vérification automatique et validation des fichiers (antivirus, intégrité des données) avant toute opération de modification ou suppression.
+
+Paramètres Avancés & Configuration Système :
+
+Configuration des limites de stockage par utilisateur et globalement.
+
+Paramétrage des politiques de stockage (durée de conservation des fichiers, conditions de suppression automatique, etc.).
+
+Options pour activer/désactiver certains services (upload, partage public, etc.) en cas de maintenance ou de problème.
+
+Personnalisation des notifications et alertes (via email, notifications push, etc.) pour les actions critiques.
+
+Logs et Historique des Activités :
+
+Journal détaillé de toutes les actions réalisées par les administrateurs et les utilisateurs.
+
+Système de logs avec enregistrement des adresses IP, dates, appareils utilisés et type d’actions effectuées.
+
+Interface de consultation des logs pour identifier rapidement les activités suspectes ou les erreurs.
+
+Sécurité & Vérifications Backend :
+
+Chaque action effectuée depuis le panel doit être strictement reliée au backend via des API sécurisées.
+
+Implémentation d’un système de vérification automatisé qui valide que chaque bouton et chaque opération se réalise correctement (tests en temps réel et logs d’erreurs).
+
+Système d’alerte instantanée pour informer les admins en cas de dysfonctionnement ou d’activité suspecte.
+
+Résumé : Crée une application de stockage dotée d’un panel d’administration futuriste et complet, incluant la gestion des rôles (avec un rôle "Admin" puissant), la surveillance en temps réel des utilisateurs et fichiers, et la vérification systématique de chaque action via le backend. L’UX doit être pensée pour que chaque interaction (boutons, menus, actions) soit validée et que l’interface réponde immédiatement aux actions des administrateurs, garantissant ainsi un système sécurisé, réactif et parfaitement contrôlé.

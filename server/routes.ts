@@ -14,6 +14,8 @@ import {
   insertUserSchema,
   updateProfileSchema
 } from "@shared/schema";
+import adminRouter from "./adminRoutes";
+import { isAuthenticated } from "./auth";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -62,6 +64,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup authentication
   setupAuth(app);
+  
+  // Register admin routes
+  app.use("/api/admin", adminRouter);
 
   // Authentication middleware
   const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {

@@ -15,6 +15,12 @@ export const themeAppearanceEnum = pgEnum('theme_appearance', ['light', 'dark', 
 // Enum for theme variant
 export const themeVariantEnum = pgEnum('theme_variant', ['professional', 'tint', 'vibrant']);
 
+// Enum for user roles
+export const userRoleEnum = pgEnum('user_role', ['user', 'moderator', 'admin', 'superadmin']);
+
+// Enum for permission actions
+export const permissionActionEnum = pgEnum('permission_action', ['read', 'write', 'delete', 'manage']);
+
 // Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -25,6 +31,9 @@ export const users = pgTable("users", {
   storageUsed: integer("storage_used").notNull().default(0),
   storageLimit: integer("storage_limit").notNull().default(2000000000), // ~2GB default
   avatarUrl: text("avatar_url"),
+  role: userRoleEnum("role").default("user").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
 });
@@ -80,6 +89,37 @@ export const shares = pgTable("shares", {
   permission: filePermissionEnum("permission").default("view").notNull(),
   password: text("password"),
   expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+// User permissions table
+export const permissions = pgTable("permissions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  action: permissionActionEnum("action").notNull(),
+  resource: text("resource").notNull(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+// Role permissions table (many-to-many)
+export const rolePermissions = pgTable("role_permissions", {
+  id: serial("id").primaryKey(),
+  role: userRoleEnum("role").notNull(),
+  permissionId: integer("permission_id").notNull().references(() => permissions.id),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+// Admin activity logs
+export const adminLogs = pgTable("admin_logs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  action: text("action").notNull(),
+  targetType: text("target_type").notNull(),
+  targetId: integer("target_id"),
+  details: text("details"),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
   createdAt: timestamp("created_at").defaultNow()
 });
 
@@ -193,6 +233,49 @@ export const searchSchema = z.object({
   folderId: z.number().optional().nullable(),
 });
 
+// Admin schemas
+export const insertPermissionSchema = createInsertSchema(permissions).pick({
+  name: true,
+  description: true,
+  action: true,
+  resource: true,
+});
+
+export const insertRolePermissionSchema = createInsertSchema(rolePermissions).pick({
+  role: true,
+  permissionId: true,
+});
+
+export const insertAdminLogSchema = createInsertSchema(adminLogs).pick({
+  userId: true,
+  action: true,
+  targetType: true,
+  targetId: true,
+  details: true,
+  ipAddress: true,
+  userAgent: true,
+});
+
+export const updateUserRoleSchema = z.object({
+  userId: z.number(),
+  role: z.enum(["user", "moderator", "admin", "superadmin"]),
+});
+
+export const adminUserSearchSchema = z.object({
+  query: z.string().optional(),
+  role: z.enum(["user", "moderator", "admin", "superadmin"]).optional(),
+  sortBy: z.enum(["createdAt", "username", "storageUsed"]).optional(),
+  sortDirection: z.enum(["asc", "desc"]).optional(),
+  page: z.number().optional(),
+  limit: z.number().optional(),
+});
+
+export const adminUserActionSchema = z.object({
+  userId: z.number(),
+  action: z.enum(["activate", "deactivate", "resetPassword", "updateRole", "updateStorage"]),
+  data: z.record(z.any()).optional(),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -205,6 +288,18 @@ export type InsertFile = z.infer<typeof insertFileSchema>;
 
 export type Share = typeof shares.$inferSelect;
 export type InsertShare = z.infer<typeof insertShareSchema>;
+
+export type Permission = typeof permissions.$inferSelect;
+export type InsertPermission = z.infer<typeof insertPermissionSchema>;
+
+export type RolePermission = typeof rolePermissions.$inferSelect;
+export type InsertRolePermission = z.infer<typeof insertRolePermissionSchema>;
+
+export type AdminLog = typeof adminLogs.$inferSelect;
+export type InsertAdminLog = z.infer<typeof insertAdminLogSchema>;
+
+export type UpdateUserRole = z.infer<typeof updateUserRoleSchema>;
+export type AdminUserAction = z.infer<typeof adminUserActionSchema>;
 
 // Schéma pour la personnalisation du thème
 export const updateUserThemeSchema = z.object({
