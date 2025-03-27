@@ -122,3 +122,16 @@ export function useAuth() {
   }
   return context;
 }
+
+// Vérifier si l'utilisateur a des droits d'administration
+export function useIsAdmin() {
+  const { user } = useAuth();
+  return user?.role === 'admin' || user?.role === 'superadmin';
+}
+
+// Vérifier si l'utilisateur a un rôle spécifique
+export function useHasRole(role: string | string[]) {
+  const { user } = useAuth();
+  const roles = Array.isArray(role) ? role : [role];
+  return user ? roles.includes(user.role) : false;
+}

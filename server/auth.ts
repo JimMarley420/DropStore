@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { eq } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { db } from "./db";
-import { users } from "@shared/schema";
+import { users, adminLogs } from "@shared/schema";
 import { log } from "./vite";
 
 // Type declaration for Express session
@@ -21,6 +21,8 @@ declare global {
       storageUsed: number;
       storageLimit: number;
       avatarUrl: string | null;
+      role: 'user' | 'moderator' | 'admin' | 'superadmin';
+      isActive: boolean;
     }
   }
 }
@@ -81,11 +83,21 @@ export function setupAuth(app: Express) {
           return done(null, false, { message: "User not found" });
         }
         
+        // Check if user is active
+        if (!user.isActive) {
+          return done(null, false, { message: "Account is inactive" });
+        }
+        
         const isValid = await comparePasswords(password, user.password);
         
         if (!isValid) {
           return done(null, false, { message: "Invalid password" });
         }
+        
+        // Update last login time
+        await db.update(users)
+          .set({ lastLoginAt: new Date() })
+          .where(eq(users.id, user.id));
         
         // Don't include password in the user object that gets serialized
         const { password: _, ...userWithoutPassword } = user;
@@ -111,8 +123,15 @@ export function setupAuth(app: Express) {
         fullName: users.fullName,
         storageUsed: users.storageUsed,
         storageLimit: users.storageLimit,
-        avatarUrl: users.avatarUrl
+        avatarUrl: users.avatarUrl,
+        role: users.role,
+        isActive: users.isActive
       }).from(users).where(eq(users.id, id));
+      
+      // Check if user is active
+      if (user && !user.isActive) {
+        return done(null, undefined);
+      }
       
       done(null, user || undefined);
     } catch (error) {
@@ -123,4 +142,71 @@ export function setupAuth(app: Express) {
 
   // Log authentication setup
   log('Authentication system initialized', 'auth');
+}
+
+// Middleware to check if user is authenticated
+export function isAuthenticated(req: any, res: any, next: any) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "Authentication required" });
+}
+
+// Middleware to check if user has specific role
+export function hasRole(roles: string | string[]) {
+  return (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    const allowedRoles = Array.isArray(roles) ? roles : [roles];
+    
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Insufficient permissions" });
+    }
+    
+    next();
+  };
+}
+
+// Middleware to check if user is admin
+export function isAdmin(req: any, res: any, next: any) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+    return res.status(403).json({ message: "Admin access required" });
+  }
+  
+  next();
+}
+
+// Log admin actions
+export async function logAdminAction(
+  userId: number, 
+  action: string, 
+  targetType: string, 
+  targetId?: number, 
+  details?: string,
+  req?: any
+) {
+  try {
+    const ipAddress = req ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : null;
+    const userAgent = req ? req.headers['user-agent'] : null;
+    
+    await db.insert(adminLogs).values({
+      userId,
+      action,
+      targetType,
+      targetId,
+      details,
+      ipAddress,
+      userAgent
+    });
+    
+    log(`Admin action: ${action} on ${targetType}${targetId ? ` (ID: ${targetId})` : ''} by user ID: ${userId}`, 'admin');
+  } catch (error) {
+    log(`Failed to log admin action: ${error}`, 'admin');
+  }
 }

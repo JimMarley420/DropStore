@@ -254,4 +254,8 @@
   .neo-brutalism {
     @apply bg-gray-900 border-2 border-gray-700 shadow-[6px_6px_0px_0px_rgba(59,130,246,0.8)];
   }
+  
+  .gradient-progress {
+    @apply bg-gradient-to-r from-blue-500 to-indigo-600;
+  }
 }
