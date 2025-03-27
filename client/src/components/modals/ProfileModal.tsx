@@ -103,13 +103,13 @@ export default function ProfileModal({ open, onOpenChange }: ProfileModalProps) 
             <div className="flex items-center space-x-4 mb-6">
               <Avatar className="h-20 w-20">
                 <AvatarImage src={user.avatarUrl || ""} alt={user.username} />
-                <AvatarFallback className="text-lg bg-primary-100 text-primary-700">
+                <AvatarFallback className="text-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
               <div>
                 <h3 className="text-lg font-medium">{user.fullName || user.username}</h3>
-                <p className="text-sm text-neutral-500">{user.email}</p>
+                <p className="text-sm text-gray-400">{user.email}</p>
               </div>
             </div>
 
@@ -160,25 +160,25 @@ export default function ProfileModal({ open, onOpenChange }: ProfileModalProps) 
           </TabsContent>
           
           <TabsContent value="account" className="space-y-4 py-4">
-            <div className="rounded-lg border p-3">
+            <div className="rounded-lg border border-gray-700/50 bg-gray-800/20 p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <UserIcon className="text-neutral-500" />
+                  <UserIcon className="text-gray-400" />
                   <div>
                     <h4 className="text-sm font-medium">Nom d'utilisateur</h4>
-                    <p className="text-sm text-neutral-500">{user.username}</p>
+                    <p className="text-sm text-gray-400">{user.username}</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="rounded-lg border p-3">
+            <div className="rounded-lg border border-gray-700/50 bg-gray-800/20 p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <Mail className="text-neutral-500" />
+                  <Mail className="text-gray-400" />
                   <div>
                     <h4 className="text-sm font-medium">Espace de stockage</h4>
-                    <p className="text-sm text-neutral-500">{Math.round(user.storageLimit / 1000000000)} Go disponibles</p>
+                    <p className="text-sm text-gray-400">{Math.round(user.storageLimit / 1000000000)} Go disponibles</p>
                   </div>
                 </div>
               </div>
