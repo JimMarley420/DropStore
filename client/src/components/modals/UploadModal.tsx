@@ -205,14 +205,14 @@ export default function UploadModal() {
     >
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Upload Files</DialogTitle>
+          <DialogTitle>Télécharger des fichiers</DialogTitle>
         </DialogHeader>
         
         <div className="flex-1 overflow-auto py-4">
           {/* Drop Zone */}
           <div 
             ref={dropzoneRef}
-            className={`border-2 border-dashed border-neutral-300 rounded-lg p-8 flex flex-col items-center justify-center bg-neutral-50 mb-6 transition-all ${isDragging ? 'border-primary-500 bg-primary-50' : ''}`}
+            className={`border-2 border-dashed border-gray-600 rounded-lg p-8 flex flex-col items-center justify-center bg-gray-800/40 mb-6 transition-all ${isDragging ? 'border-blue-500 bg-blue-900/20' : ''}`}
             onDragOver={(e) => {
               e.preventDefault();
               setIsDragging(true);
@@ -220,16 +220,16 @@ export default function UploadModal() {
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleFileDrop}
           >
-            <div className="text-4xl text-primary-500 mb-3">
-              <UploadCloud className="h-12 w-12 mx-auto" />
+            <div className="text-4xl text-blue-400 mb-3">
+              <UploadCloud className="h-12 w-12 mx-auto floating-element" />
             </div>
-            <h3 className="text-lg font-medium text-neutral-800 mb-2">Drag files here</h3>
-            <p className="text-neutral-600 mb-4 text-center">or</p>
+            <h3 className="text-lg font-medium text-blue-300 mb-2 text-glow">Déposez vos fichiers ici</h3>
+            <p className="text-gray-300 mb-4 text-center">ou</p>
             <Button 
-              variant="primary"
+              className="gradient-button hover-float"
               onClick={() => fileInputRef.current?.click()}
             >
-              Browse
+              Parcourir
               <input 
                 ref={fileInputRef}
                 type="file" 
@@ -238,19 +238,19 @@ export default function UploadModal() {
                 onChange={handleFileSelect}
               />
             </Button>
-            <p className="mt-3 text-sm text-neutral-500">Maximum file size: 10 GB</p>
+            <p className="mt-3 text-sm text-gray-400">Taille maximale: 10 Go</p>
           </div>
           
           {/* Upload List */}
           {uploadFiles.length > 0 && (
-            <div className="border border-neutral-200 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 bg-neutral-50 border-b border-neutral-200 font-medium text-neutral-700 flex justify-between items-center">
-                <span>Files to upload</span>
+            <div className="border border-gray-700/50 rounded-lg overflow-hidden bg-gray-800/50">
+              <div className="px-4 py-3 bg-gray-800/70 border-b border-gray-700/50 font-medium text-gray-200 flex justify-between items-center">
+                <span>Fichiers à télécharger</span>
                 <span className="text-sm">
-                  {successFiles > 0 && <span className="text-green-500 mr-2">{successFiles} completed</span>}
-                  {errorFiles > 0 && <span className="text-red-500 mr-2">{errorFiles} failed</span>}
+                  {successFiles > 0 && <span className="text-green-500 mr-2">{successFiles} complété(s)</span>}
+                  {errorFiles > 0 && <span className="text-red-500 mr-2">{errorFiles} échoué(s)</span>}
                   {(pendingFiles > 0 || uploadingFiles > 0) && (
-                    <span>{pendingFiles + uploadingFiles} pending</span>
+                    <span className="text-blue-300">{pendingFiles + uploadingFiles} en attente</span>
                   )}
                 </span>
               </div>
@@ -323,13 +323,6 @@ export default function UploadModal() {
                         <Progress 
                           value={uploadFile.progress} 
                           className="h-1.5 mt-2"
-                          indicatorClassName={
-                            uploadFile.status === 'error' 
-                              ? 'bg-red-500' 
-                              : uploadFile.status === 'success'
-                                ? 'bg-green-500'
-                                : 'bg-primary-500'
-                          }
                         />
                       </div>
                     </div>
@@ -344,15 +337,16 @@ export default function UploadModal() {
           <Button 
             variant="outline" 
             onClick={() => setActiveModal(null)}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
           >
-            Cancel
+            Annuler
           </Button>
           <Button 
-            variant="primary"
+            className="gradient-button"
             onClick={startUpload}
             disabled={uploadFiles.length === 0 || uploadFiles.every(f => f.status !== 'pending') || uploadFileMutation.isPending}
           >
-            {uploadFileMutation.isPending ? 'Uploading...' : allFilesProcessed ? 'Done' : 'Upload'}
+            {uploadFileMutation.isPending ? 'En cours...' : allFilesProcessed ? 'Terminé' : 'Télécharger'}
           </Button>
         </DialogFooter>
       </DialogContent>
