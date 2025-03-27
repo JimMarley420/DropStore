@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, FolderPlus, Grid, List, SortDesc, RefreshCw, Trash } from "lucide-react";
+import { Upload, FolderPlus, Grid, List, SortDesc, RefreshCw, Trash, UserIcon, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -28,7 +28,7 @@ interface FileViewProps {
 
 export default function FileView({ section, folderId, data, isLoading, error }: FileViewProps) {
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
   const { 
     viewMode, 
     setViewMode, 
@@ -168,20 +168,39 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
             </button>
             <div className="relative ml-2">
-              <button 
-                className="flex items-center hover-float"
-                onClick={() => {
-                  setActiveModal("profile");
-                  setModalData({});
-                }}
-              >
-                <Avatar className="w-9 h-9 glowing-border">
-                  <AvatarImage src={user?.avatarUrl || ""} alt={user?.username || "User"} />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
-                    {getInitials()}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center hover-float">
+                    <Avatar className="w-9 h-9 glowing-border">
+                      <AvatarImage src={user?.avatarUrl || ""} alt={user?.username || "User"} />
+                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="gradient-card border-gray-700/50 p-1">
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      setActiveModal("profile");
+                      setModalData({});
+                    }}
+                    className="text-gray-300 hover:bg-gray-800/60 cursor-pointer"
+                  >
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Profil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      logoutMutation.mutate();
+                    }}
+                    className="text-red-400 hover:bg-gray-800/60 cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Déconnexion
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

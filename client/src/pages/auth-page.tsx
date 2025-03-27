@@ -40,7 +40,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       {/* Authentication forms */}
       <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card">
         <div className="max-w-md w-full px-4">
