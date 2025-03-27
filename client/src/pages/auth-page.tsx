@@ -40,18 +40,18 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen lg:flex-row">
+    <div className="flex h-screen">
       {/* Authentication forms */}
-      <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card order-2 lg:order-1 min-h-[60vh] lg:min-h-screen">
-        <div className="max-w-md w-full px-4 py-8">
-          <div className="mb-6 text-center lg:mb-8">
-            <div className="mb-4 floating-element lg:mb-6">
+      <div className="flex items-center justify-center w-full lg:w-1/2 gradient-card">
+        <div className="max-w-md w-full px-4">
+          <div className="mb-8 text-center">
+            <div className="mb-6 floating-element">
               <svg
-                width="64"
-                height="64"
+                width="80"
+                height="80"
                 viewBox="0 0 80 80"
                 fill="none"
-                className="mx-auto lg:w-[80px] lg:h-[80px]"
+                className="mx-auto"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <circle cx="40" cy="40" r="38" stroke="url(#logo-gradient)" strokeWidth="4" />
@@ -69,8 +69,8 @@ export default function AuthPage() {
                 </defs>
               </svg>
             </div>
-            <h1 className="gradient-heading text-2xl lg:text-3xl font-bold mb-1 lg:mb-2 text-glow">DropStore</h1>
-            <p className="text-blue-300 text-sm lg:text-base">Le futur du stockage en ligne est ici</p>
+            <h1 className="gradient-heading text-3xl font-bold mb-2 text-glow">DropStore</h1>
+            <p className="text-blue-300">Le futur du stockage en ligne est ici</p>
           </div>
           
           <Tabs 
@@ -79,7 +79,7 @@ export default function AuthPage() {
             onValueChange={(value) => setTab(value as AuthTab)}
             className="glowing-border rounded-md p-1"
           >
-            <TabsList className="grid w-full grid-cols-2 mb-6 lg:mb-8 bg-gray-900/40">
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-900/40">
               <TabsTrigger 
                 value="login" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/30 data-[state=active]:to-indigo-600/30 data-[state=active]:text-blue-300"
@@ -106,57 +106,57 @@ export default function AuthPage() {
       </div>
 
       {/* Hero section */}
-      <div className="flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-4 lg:p-12 relative z-10 order-1 lg:order-2 min-h-[40vh] lg:min-h-screen">
-        <div className="max-w-xl relative z-10 glowing-border p-4 lg:p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
-          <h1 className="text-2xl lg:text-4xl font-bold mb-3 lg:mb-6 gradient-heading text-glow">
-            DropStore <span className="text-sm lg:text-lg font-light text-blue-300 ml-2">v1.0</span>
+      <div className="hidden lg:flex lg:w-1/2 auth-hero-bg flex-col items-center justify-center text-white p-12 relative z-10">
+        <div className="max-w-xl relative z-10 glowing-border p-8 rounded-xl bg-gray-900/20 backdrop-blur-sm">
+          <h1 className="text-4xl font-bold mb-6 gradient-heading text-glow">
+            DropStore <span className="text-lg font-light text-blue-300 ml-2">v1.0</span>
           </h1>
-          <h2 className="text-xl lg:text-2xl font-semibold mb-3 lg:mb-6 text-blue-300">Interface futuriste. Performance ultra-rapide.</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-blue-300">Interface futuriste. Performance ultra-rapide.</h2>
           
-          <div className="relative my-4 lg:my-8 hidden sm:block">
+          <div className="relative my-8">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-md transform -rotate-1"></div>
-            <p className="relative z-10 p-3 lg:p-4 text-sm lg:text-lg text-gray-100 bg-gray-900/60 backdrop-blur-sm rounded-md">
+            <p className="relative z-10 p-4 text-lg text-gray-100 bg-gray-900/60 backdrop-blur-sm rounded-md">
               Une solution de stockage en ligne de nouvelle génération pour tous vos documents, 
               photos, vidéos et plus encore.
             </p>
           </div>
           
-          <ul className="space-y-2 lg:space-y-4 relative mt-4 lg:mt-8">
+          <ul className="space-y-4 relative mt-8">
             <div className="absolute h-full w-1 bg-gradient-to-b from-blue-500/40 to-indigo-500/40 left-[7px] top-1 rounded-full"></div>
             <li className="flex items-start pl-6 hover-float">
-              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-2 lg:mr-3 mt-0.5 lg:mt-1">
-                <CheckIcon className="h-3 w-3 lg:h-4 lg:w-4 text-black" />
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
               </div>
               <div>
-                <span className="text-blue-300 font-medium text-sm lg:text-base">Stockage sécurisé</span>
-                <p className="text-xs lg:text-sm text-gray-300">Protection de niveau entreprise pour vos données</p>
+                <span className="text-blue-300 font-medium">Stockage sécurisé</span>
+                <p className="text-sm text-gray-300">Protection de niveau entreprise pour vos données</p>
               </div>
             </li>
             <li className="flex items-start pl-6 hover-float">
-              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-2 lg:mr-3 mt-0.5 lg:mt-1">
-                <CheckIcon className="h-3 w-3 lg:h-4 lg:w-4 text-black" />
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
               </div>
               <div>
-                <span className="text-blue-300 font-medium text-sm lg:text-base">Partage intelligent</span>
-                <p className="text-xs lg:text-sm text-gray-300">Contrôlez qui peut voir et modifier vos fichiers</p>
+                <span className="text-blue-300 font-medium">Partage intelligent</span>
+                <p className="text-sm text-gray-300">Contrôlez qui peut voir et modifier vos fichiers</p>
               </div>
             </li>
             <li className="flex items-start pl-6 hover-float">
-              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-2 lg:mr-3 mt-0.5 lg:mt-1">
-                <CheckIcon className="h-3 w-3 lg:h-4 lg:w-4 text-black" />
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
               </div>
               <div>
-                <span className="text-blue-300 font-medium text-sm lg:text-base">Multi-plateforme</span>
-                <p className="text-xs lg:text-sm text-gray-300">Accédez à vos fichiers depuis n'importe quel appareil</p>
+                <span className="text-blue-300 font-medium">Multi-plateforme</span>
+                <p className="text-sm text-gray-300">Accédez à vos fichiers depuis n'importe quel appareil</p>
               </div>
             </li>
             <li className="flex items-start pl-6 hover-float">
-              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-2 lg:mr-3 mt-0.5 lg:mt-1">
-                <CheckIcon className="h-3 w-3 lg:h-4 lg:w-4 text-black" />
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 mr-3 mt-1">
+                <CheckIcon className="h-4 w-4 text-black" />
               </div>
               <div>
-                <span className="text-blue-300 font-medium text-sm lg:text-base">Synchronisation en temps réel</span>
-                <p className="text-xs lg:text-sm text-gray-300">Modifications instantanément reflétées partout</p>
+                <span className="text-blue-300 font-medium">Synchronisation en temps réel</span>
+                <p className="text-sm text-gray-300">Modifications instantanément reflétées partout</p>
               </div>
             </li>
           </ul>
@@ -202,29 +202,29 @@ function LoginForm() {
 
   return (
     <Card className="gradient-card border-gray-700/30 shadow-xl">
-      <CardHeader className="px-4 py-4 lg:px-6 lg:py-6">
-        <CardTitle className="gradient-heading text-xl lg:text-2xl">Connexion</CardTitle>
-        <CardDescription className="text-sm">
+      <CardHeader>
+        <CardTitle className="gradient-heading">Connexion</CardTitle>
+        <CardDescription>
           Connectez-vous à votre compte DropStore
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-4 lg:px-6 pb-4 lg:pb-6">
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 lg:space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Nom d'utilisateur</FormLabel>
+                <FormItem>
+                  <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Entrez votre nom d'utilisateur" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -232,32 +232,32 @@ function LoginForm() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Mot de passe</FormLabel>
+                <FormItem>
+                  <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
                     <Input 
                       type="password" 
                       placeholder="••••••••" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <Button 
               type="submit" 
-              className="w-full gradient-button h-9 lg:h-10 mt-2 text-sm lg:text-base"
+              className="w-full gradient-button"
               disabled={loginMutation.isPending}
             >
               {loginMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-3 w-3 lg:h-4 lg:w-4 animate-spin" />
-                  <span className="text-sm lg:text-base">Connexion en cours...</span>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connexion en cours...
                 </>
               ) : (
-                <span className="text-sm lg:text-base">Se connecter</span>
+                "Se connecter"
               )}
             </Button>
           </form>
@@ -289,29 +289,29 @@ function RegisterForm() {
 
   return (
     <Card className="gradient-card border-gray-700/30 shadow-xl">
-      <CardHeader className="px-4 py-4 lg:px-6 lg:py-6">
-        <CardTitle className="gradient-heading text-xl lg:text-2xl">Inscription</CardTitle>
-        <CardDescription className="text-sm">
+      <CardHeader>
+        <CardTitle className="gradient-heading">Inscription</CardTitle>
+        <CardDescription>
           Créez un compte pour commencer à utiliser DropStore
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-4 lg:px-6 pb-4 lg:pb-6">
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 lg:space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Nom d'utilisateur</FormLabel>
+                <FormItem>
+                  <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Choisissez un nom d'utilisateur" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -319,17 +319,17 @@ function RegisterForm() {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Email</FormLabel>
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input 
                       type="email" 
                       placeholder="votre@email.com" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -337,16 +337,16 @@ function RegisterForm() {
               control={form.control}
               name="fullName"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Nom complet</FormLabel>
+                <FormItem>
+                  <FormLabel>Nom complet</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Votre nom complet" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -354,17 +354,17 @@ function RegisterForm() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Mot de passe</FormLabel>
+                <FormItem>
+                  <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
                     <Input 
                       type="password" 
                       placeholder="••••••••" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -372,32 +372,32 @@ function RegisterForm() {
               control={form.control}
               name="confirmPassword"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 lg:space-y-2">
-                  <FormLabel className="text-sm lg:text-base">Confirmer le mot de passe</FormLabel>
+                <FormItem>
+                  <FormLabel>Confirmer le mot de passe</FormLabel>
                   <FormControl>
                     <Input 
                       type="password" 
                       placeholder="••••••••" 
-                      className="bg-gray-800/50 border-gray-700/50 h-9 lg:h-10 text-sm lg:text-base"
+                      className="bg-gray-800/50 border-gray-700/50"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage className="text-xs lg:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <Button 
               type="submit" 
-              className="w-full gradient-button h-9 lg:h-10 mt-2 text-sm lg:text-base" 
+              className="w-full gradient-button" 
               disabled={registerMutation.isPending}
             >
               {registerMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-3 w-3 lg:h-4 lg:w-4 animate-spin" />
-                  <span className="text-sm lg:text-base">Inscription en cours...</span>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Inscription en cours...
                 </>
               ) : (
-                <span className="text-sm lg:text-base">S'inscrire</span>
+                "S'inscrire"
               )}
             </Button>
           </form>
