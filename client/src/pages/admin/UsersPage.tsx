@@ -100,7 +100,7 @@ export default function UsersPage() {
     queryKey: ['/api/admin/users', searchQuery, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (searchQuery) params.append('q', searchQuery);
+      if (searchQuery) params.append('query', searchQuery);
       params.append('page', currentPage.toString());
       
       const res = await fetch(`/api/admin/users?${params.toString()}`);
