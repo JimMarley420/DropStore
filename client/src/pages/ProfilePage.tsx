@@ -44,7 +44,7 @@ export default function ProfilePage() {
   // Get user storage stats
   const { data: storageData, isLoading: storageLoading } = useQuery<{ used: number; total: number }>({
     queryKey: ["/api/user/storage"],
-    queryFn: getQueryFn({ on401: "error" }),
+    queryFn: getQueryFn({ on401: "throw" }),
     enabled: !!user,
   });
 

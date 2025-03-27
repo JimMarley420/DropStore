@@ -75,7 +75,7 @@ interface AdminStats {
 }
 
 // Fonction pour formater les octets en taille lisible
-function formatBytes(bytes: number, decimals = 2) {
+export function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) return '0 Octets';
 
   const k = 1024;
@@ -111,7 +111,21 @@ export default function AdminDashboard() {
   // Requête pour récupérer les statistiques
   const { data: stats, isLoading, error } = useQuery<AdminStats>({
     queryKey: ['/api/admin/stats'],
+    retry: 3,
+    refetchOnWindowFocus: false,
+    staleTime: 60000, // 1 minute
   });
+  
+  // Données par défaut pour éviter les erreurs quand les données ne sont pas encore chargées
+  const defaultStats: AdminStats = {
+    users: { total: 0, active: 0 },
+    files: 0,
+    folders: 0,
+    shares: 0,
+    storage: { used: 0 },
+    recentActivity: [],
+    userActivity: []
+  };
 
   // État pour les onglets
   const [activeTab, setActiveTab] = useState('overview');
@@ -154,18 +168,28 @@ export default function AdminDashboard() {
     );
   }
 
+  // Utiliser les statistiques ou les valeurs par défaut
+  const safeStats = stats || defaultStats;
+  
   // Préparer les données pour les graphiques
-  const userActivityData = stats.userActivity.map(item => ({
+  const userActivityData = safeStats.userActivity.map(item => ({
     date: new Date(item.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
     logins: item.count
   }));
 
-  const storageUsedPercent = Math.min(100, (stats.storage.used / 1000000000000) * 100);
+  // Si nous n'avons pas de données d'activité, créer quelques données fictives pour montrer le format du graphique
+  const demoActivityData = userActivityData.length > 0 ? userActivityData : [
+    { date: '01 jan', logins: 0 },
+    { date: '02 jan', logins: 0 },
+    { date: '03 jan', logins: 0 },
+  ];
 
-  // Données de distribution du stockage par utilisateur (simulées)
+  const storageUsedPercent = Math.min(100, (safeStats.storage.used / 1000000000000) * 100);
+
+  // Données de distribution du stockage par utilisateur
   const storageDistributionData = [
-    { name: 'Utilisé', value: stats.storage.used, color: '#3b82f6' },
-    { name: 'Disponible', value: 1000000000000 - stats.storage.used, color: '#1f2937' }
+    { name: 'Utilisé', value: safeStats.storage.used, color: '#3b82f6' },
+    { name: 'Disponible', value: 1000000000000 - safeStats.storage.used, color: '#1f2937' }
   ];
 
   return (
@@ -202,9 +226,9 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.users.total}</div>
+                <div className="text-2xl font-bold">{safeStats.users.total}</div>
                 <p className="text-xs text-gray-400 mt-1">
-                  {stats.users.active} actifs ({Math.round((stats.users.active / stats.users.total) * 100)}%)
+                  {safeStats.users.active} actifs ({safeStats.users.total > 0 ? Math.round((safeStats.users.active / safeStats.users.total) * 100) : 0}%)
                 </p>
               </CardContent>
             </Card>
@@ -215,9 +239,9 @@ export default function AdminDashboard() {
                 <FileText className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.files}</div>
+                <div className="text-2xl font-bold">{safeStats.files}</div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Dans {stats.folders} dossiers
+                  Dans {safeStats.folders} dossiers
                 </p>
               </CardContent>
             </Card>
@@ -228,7 +252,7 @@ export default function AdminDashboard() {
                 <HardDrive className="h-4 w-4 text-purple-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{formatBytes(stats.storage.used)}</div>
+                <div className="text-2xl font-bold">{formatBytes(safeStats.storage.used)}</div>
                 <div className="mt-2">
                   <Progress value={storageUsedPercent} className="h-2 bg-gray-700" indicatorClassName="bg-gradient-to-r from-blue-600 to-purple-600" />
                 </div>
@@ -241,7 +265,7 @@ export default function AdminDashboard() {
                 <Share2 className="h-4 w-4 text-orange-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.shares}</div>
+                <div className="text-2xl font-bold">{safeStats.shares}</div>
                 <p className="text-xs text-gray-400 mt-1">
                   Liens de partage actifs
                 </p>
@@ -352,7 +376,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {stats.recentActivity.map((activity) => (
+                {safeStats.recentActivity.map((activity) => (
                   <div key={activity.id} className="flex items-start space-x-4">
                     <div className="bg-blue-900/30 rounded-full p-2 mt-1">
                       {activity.action.includes('user') ? (
@@ -397,9 +421,9 @@ export default function AdminDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={[
-                        { name: 'Admin', total: Math.round(stats.users.total * 0.05) },
-                        { name: 'Modérateur', total: Math.round(stats.users.total * 0.1) },
-                        { name: 'Utilisateur', total: Math.round(stats.users.total * 0.85) },
+                        { name: 'Admin', total: Math.round(safeStats.users.total * 0.05) },
+                        { name: 'Modérateur', total: Math.round(safeStats.users.total * 0.1) },
+                        { name: 'Utilisateur', total: Math.round(safeStats.users.total * 0.85) },
                       ]}
                       margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                     >
@@ -450,8 +474,8 @@ export default function AdminDashboard() {
                     <PieChart>
                       <Pie
                         data={[
-                          { name: 'Actifs', value: stats.users.active, color: '#10b981' },
-                          { name: 'Inactifs', value: stats.users.total - stats.users.active, color: '#6b7280' },
+                          { name: 'Actifs', value: safeStats.users.active, color: '#10b981' },
+                          { name: 'Inactifs', value: safeStats.users.total - safeStats.users.active, color: '#6b7280' },
                         ]}
                         innerRadius={60}
                         outerRadius={90}
@@ -524,7 +548,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="mt-4 text-center">
                   <p className="text-sm text-gray-300">
-                    {formatBytes(stats.storage.used)} utilisés sur 1 To
+                    {formatBytes(safeStats.storage.used)} utilisés sur 1 To
                   </p>
                 </div>
               </CardContent>
@@ -594,7 +618,7 @@ export default function AdminDashboard() {
               <div className="relative">
                 <div className="border-l-2 border-gray-700 absolute h-full left-7 top-0"></div>
                 <ul className="space-y-8">
-                  {stats.recentActivity.map((activity) => (
+                  {safeStats.recentActivity.map((activity) => (
                     <li key={activity.id} className="ml-10 relative">
                       {/* Point sur la timeline */}
                       <div className="absolute -left-[40px] mt-1.5">

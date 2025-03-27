@@ -75,15 +75,13 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         
         {/* En-tête du sidebar */}
         <div className="px-6 mb-6">
-          <Link href="/">
-            <a className="flex items-center space-x-2">
-              <img src="/generated-icon.png" alt="DropStore" className="w-8 h-8" />
-              <div>
-                <h1 className="text-xl font-bold gradient-heading">DropStore</h1>
-                <p className="text-xs text-blue-400">Administration</p>
-              </div>
-            </a>
-          </Link>
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+            <img src="/generated-icon.png" alt="DropStore" className="w-8 h-8" />
+            <div>
+              <h1 className="text-xl font-bold gradient-heading">DropStore</h1>
+              <p className="text-xs text-blue-400">Administration</p>
+            </div>
+          </div>
         </div>
         
         {/* Navigation principale */}
@@ -125,10 +123,10 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       </aside>
 
       {/* Contenu principal */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-y-auto max-h-screen">
         {/* En-tête mobile avec bouton menu */}
         {isMobile && (
-          <div className="sticky top-0 z-20 p-4 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50 flex items-center">
+          <div className="sticky top-0 z-20 p-4 bg-gray-900/90 backdrop-blur-sm border-b border-gray-700/50 flex items-center">
             <button 
               className="text-gray-400 hover:text-white mr-4"
               onClick={() => setSidebarOpen(true)}
@@ -142,7 +140,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         )}
         
         {/* Titre de la page */}
-        <div className="px-6 py-4 border-b border-gray-700/30 bg-gray-800/20">
+        <div className="sticky top-0 z-10 px-6 py-4 border-b border-gray-700/30 bg-gray-900/90 backdrop-blur-sm">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center">
               <Link href="/admin">
@@ -157,7 +155,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         </div>
         
         {/* Contenu de la page */}
-        <div className="p-6">
+        <div className="p-4 md:p-6 pb-24">
           <div className="max-w-5xl mx-auto">
             {children}
           </div>
