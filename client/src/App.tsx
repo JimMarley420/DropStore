@@ -8,6 +8,7 @@ import AuthPage from "@/pages/auth-page";
 import SharePage from "@/pages/SharePage";
 import SharedFileView from "@/pages/SharedFileView";
 import ProfilePage from "@/pages/ProfilePage";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import { FileContextProvider } from "@/context/FileContext";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -24,8 +25,11 @@ function Router() {
       <ProtectedRoute path="/trash" component={Home} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       {/* Routes admin protégées */}
-      <AdminProtectedRoute path="/admin" component={() => <div>Admin Dashboard</div>} />
+      <AdminProtectedRoute path="/admin" component={AdminDashboard} />
       <AdminProtectedRoute path="/admin/users" component={() => <div>User Management</div>} />
+      <AdminProtectedRoute path="/admin/files" component={() => <div>Files Management</div>} />
+      <AdminProtectedRoute path="/admin/roles" component={() => <div>Roles & Permissions</div>} />
+      <AdminProtectedRoute path="/admin/settings" component={() => <div>System Settings</div>} />
       <Route path="/auth" component={AuthPage} />
       {/* Routes de partage publiques (non protégées) */}
       <Route path="/share/:token" component={SharePage} />

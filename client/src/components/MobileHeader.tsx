@@ -1,9 +1,9 @@
 import React from "react";
-import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocation, Link } from "wouter";
+import { useAuth, useIsAdmin } from "@/hooks/use-auth";
 import { useFileContext } from "@/context/FileContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, RefreshCw, Search, User } from "lucide-react";
+import { Menu, RefreshCw, Search, User, LogOut, Settings, ShieldCheck } from "lucide-react";
 import { 
   Sheet,
   SheetContent,
@@ -17,7 +17,8 @@ interface MobileHeaderProps {
 }
 
 export default function MobileHeader({ refreshData }: MobileHeaderProps) {
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
+  const isAdmin = useIsAdmin();
   const [location, setLocation] = useLocation();
   const { setActiveModal } = useFileContext();
   
@@ -96,14 +97,38 @@ export default function MobileHeader({ refreshData }: MobileHeaderProps) {
               </div>
               
               <nav className="space-y-1">
-                <a 
-                  className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800"
-                  onClick={() => setActiveModal("profile")}
-                >
-                  <User size={18} className="mr-2" />
-                  Profil
-                </a>
-                {/* Options supplémentaires ici */}
+                <Link href="/profile">
+                  <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                    <User size={18} className="mr-2 text-blue-400" />
+                    Profil
+                  </a>
+                </Link>
+                
+                <Link href="/settings">
+                  <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                    <Settings size={18} className="mr-2 text-purple-400" />
+                    Paramètres
+                  </a>
+                </Link>
+                
+                {isAdmin && (
+                  <Link href="/admin">
+                    <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                      <ShieldCheck size={18} className="mr-2 text-green-400" />
+                      Administration
+                    </a>
+                  </Link>
+                )}
+                
+                <div className="pt-2 mt-2 border-t border-gray-800">
+                  <button
+                    className="w-full flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800"
+                    onClick={() => logoutMutation.mutate()}
+                  >
+                    <LogOut size={18} className="mr-2 text-red-400" />
+                    Déconnexion
+                  </button>
+                </div>
               </nav>
             </div>
           </SheetContent>
