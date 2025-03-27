@@ -79,8 +79,11 @@ interface UserListResponse {
 }
 
 interface UserActionPayload {
-  action: 'activate' | 'deactivate' | 'delete' | 'reset_password' | 'change_role';
-  role?: string;
+  action: 'activate' | 'deactivate' | 'resetPassword' | 'updateRole' | 'updateStorage';
+  data?: {
+    role?: string;
+    storageLimit?: number;
+  };
 }
 
 export default function UsersPage() {
@@ -91,6 +94,7 @@ export default function UsersPage() {
   const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
   const [actionType, setActionType] = useState<string>('');
   const [newRole, setNewRole] = useState<string>('');
+  const [newStorageLimit, setNewStorageLimit] = useState<number>(0);
   
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -158,6 +162,8 @@ export default function UsersPage() {
     setActionType(action);
     if (action === 'change_role') {
       setNewRole(user.role);
+    } else if (action === 'update_storage') {
+      setNewStorageLimit(user.storageLimit);
     }
     setIsActionDialogOpen(true);
   };
@@ -166,10 +172,29 @@ export default function UsersPage() {
   const performAction = () => {
     if (!selectedUser) return;
     
-    const actionPayload: UserActionPayload = { action: actionType as any };
+    // Adaptation des noms d'actions aux valeurs attendues par le backend
+    let action: UserActionPayload['action'];
+    switch(actionType) {
+      case 'change_role':
+        action = 'updateRole';
+        break;
+      case 'update_storage':
+        action = 'updateStorage';
+        break;
+      case 'reset_password':
+        action = 'resetPassword';
+        break;
+      default:
+        action = actionType as UserActionPayload['action'];
+    }
     
+    const actionPayload: UserActionPayload = { action };
+    
+    // Configuration des données supplémentaires en fonction de l'action
     if (actionType === 'change_role' && newRole) {
-      actionPayload.role = newRole;
+      actionPayload.data = { role: newRole };
+    } else if (actionType === 'update_storage' && newStorageLimit > 0) {
+      actionPayload.data = { storageLimit: newStorageLimit };
     }
     
     userActionMutation.mutate({
