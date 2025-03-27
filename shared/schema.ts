@@ -266,8 +266,12 @@ export const adminUserSearchSchema = z.object({
   role: z.enum(["user", "moderator", "admin", "superadmin"]).optional(),
   sortBy: z.enum(["createdAt", "username", "storageUsed"]).optional(),
   sortDirection: z.enum(["asc", "desc"]).optional(),
-  page: z.number().optional(),
-  limit: z.number().optional(),
+  page: z.union([z.string(), z.number()]).optional().transform(val => 
+    val === undefined ? 1 : Number(val)
+  ),
+  limit: z.union([z.string(), z.number()]).optional().transform(val => 
+    val === undefined ? 20 : Number(val)
+  ),
 });
 
 export const adminUserActionSchema = z.object({
