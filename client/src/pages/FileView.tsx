@@ -118,7 +118,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       }}
     >
       {/* Header with search and user info */}
-      <header className="border-b border-gray-700/30 gradient-card rounded-none shadow-lg z-10">
+      <header className="border-b border-gray-700/30 gradient-card rounded-none shadow-lg z-10 hidden md:block">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center hover-float">
@@ -154,12 +154,6 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
 
           {/* User Actions */}
           <div className="flex items-center">
-            <button className="p-2 rounded-full hover:bg-gray-800/40 transition-colors md:hidden mr-2" title="Search">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="text-gray-300">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.3-4.3"/>
-              </svg>
-            </button>
             <button className="p-2 rounded-full hover:bg-gray-800/40 transition-colors mr-2 relative" title="Notifications">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="text-gray-300">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
@@ -207,7 +201,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       </header>
 
       {/* Breadcrumb & Tools */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10 md:top-0 top-14">
         <div className="flex items-center mb-3 sm:mb-0">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-1 text-sm">
