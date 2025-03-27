@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useRoute, useLocation } from "wouter";
 import Sidebar from "@/components/Sidebar";
 import FileView from "@/pages/FileView";
 import MobileNavigation from "@/components/MobileNavigation";
+import MobileHeader from "@/components/MobileHeader";
 import { useFileContext } from "@/context/FileContext";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import UploadModal from "@/components/modals/UploadModal";
 import NewFolderModal from "@/components/modals/NewFolderModal";
 import RenameModal from "@/components/modals/RenameModal";
@@ -41,7 +42,7 @@ export default function Home() {
   };
 
   // Fetch data based on the current section
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<any>({
     queryKey: [getEndpoint()],
     enabled: section !== "search", // Don't fetch if we're on the search page
   });
@@ -53,8 +54,9 @@ export default function Home() {
     } else {
       switch (section) {
         case "folder":
-          if (data?.breadcrumbs) {
-            setCurrentPath(data.breadcrumbs.map((b: any) => b.name).join("/"));
+          if (data && typeof data === 'object' && 'breadcrumbs' in data) {
+            const breadcrumbs = data.breadcrumbs as Array<{id: number, name: string}>;
+            setCurrentPath(breadcrumbs.map(b => b.name).join("/"));
           } else {
             setCurrentPath("/");
           }
@@ -84,10 +86,18 @@ export default function Home() {
     }
   }, [match, section, setLocation]);
 
+  // Fonction pour rafraîchir les données
+  const refreshData = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: [getEndpoint()] });
+  }, [getEndpoint]);
+
   return (
     <div className="flex flex-col h-screen">
+      {/* En-tête Mobile */}
+      <MobileHeader refreshData={refreshData} />
+      
       {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden mobile-content">
         {/* Sidebar */}
         <Sidebar />
 
