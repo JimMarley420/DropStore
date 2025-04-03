@@ -43,19 +43,19 @@ export default function StorageStats() {
     <>
       <div className="px-4 mb-6">
         <div className="mb-2 flex justify-between items-center">
-          <h3 className="font-medium text-neutral-800">Storage</h3>
-          <span className="text-xs text-neutral-500">
+          <h3 className="font-medium text-gray-200">Storage</h3>
+          <span className="text-xs text-gray-400">
             {formatFileSize(stats?.used || 0)} / {formatFileSize(stats?.total || 0)}
           </span>
         </div>
         <Progress
           value={usagePercentage}
-          className="h-2 bg-neutral-200"
-          indicatorClassName="bg-primary-500"
+          className="h-2 bg-gray-700/50"
+          indicatorClassName="gradient-progress"
         />
         <Button
           variant="outline"
-          className="mt-3 text-sm text-center w-full py-1.5 border border-primary-500 text-primary-500 hover:bg-primary-50"
+          className="mt-3 text-sm text-center w-full py-1.5 border border-gray-700 text-gray-300 hover:bg-gray-700 transition-colors"
           onClick={() => setProfileOpen(true)}
         >
           <UserIcon className="mr-2 h-4 w-4" />
