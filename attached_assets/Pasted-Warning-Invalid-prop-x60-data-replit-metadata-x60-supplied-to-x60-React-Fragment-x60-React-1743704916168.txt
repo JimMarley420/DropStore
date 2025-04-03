@@ -1,0 +1,67 @@
+Warning: Invalid prop &#x60;data-replit-metadata&#x60; supplied to &#x60;React.Fragment&#x60;. React.Fragment can only have &#x60;key&#x60; and &#x60;children&#x60; props.
+    at FileView (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/FileView.tsx?t=1743704888829:36:36)
+    at div
+    at div
+    at div
+    at Home (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/Home.tsx:35:27)
+    at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+    at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+    at Router
+    at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+    at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+    at App
+`DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Warning: Invalid prop &#x60;data-replit-metadata&#x60; supplied to &#x60;React.Fragment&#x60;. React.Fragment can only have &#x60;key&#x60; and &#x60;children&#x60; props.
+    at FileView (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/FileView.tsx?t=1743704888829:36:36)
+    at div
+    at div
+    at div
+    at Home (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/Home.tsx:35:27)
+    at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+    at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+    at Router
+    at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+    at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+    at App
+[vite] hot updated: /src/pages/FileView.tsx
+[vite] hot updated: /src/index.css?v=RhosX8cEHks0T2rHJw6nQ
+Warning: Invalid prop &#x60;data-replit-metadata&#x60; supplied to &#x60;React.Fragment&#x60;. React.Fragment can only have &#x60;key&#x60; and &#x60;children&#x60; props.
+    at FileView (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/FileView.tsx?t=1743704911702:36:36)
+    at div
+    at div
+    at div
+    at Home (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/Home.tsx:35:27)
+    at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+    at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+    at Router
+    at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+    at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+    at App
+at FileView (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/FileView.tsx?t=1743704911702:36:36)
+at div
+at div
+at div
+at Home (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/Home.tsx:35:27)
+at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+at Router
+at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+at App
+at t.value (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
