@@ -47,9 +47,9 @@ export default function MobileHeader({ refreshData }: MobileHeaderProps) {
 
   return (
     <div className="mobile-header">
-      <div className="mobile-logo gradient-heading">
+      <div className="mobile-logo">
         <img src="/generated-icon.png" alt="DropStore" className="w-7 h-7 mr-2" />
-        <span>{getPageTitle()}</span>
+        <span className="gradient-heading">{getPageTitle()}</span>
       </div>
       
       <div className="flex items-center space-x-3">
@@ -97,26 +97,20 @@ export default function MobileHeader({ refreshData }: MobileHeaderProps) {
               </div>
               
               <nav className="space-y-1">
-                <Link href="/profile">
-                  <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
-                    <User size={18} className="mr-2 text-blue-400" />
-                    Profil
-                  </a>
+                <Link href="/profile" className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                  <User size={18} className="mr-2 text-blue-400" />
+                  Profil
                 </Link>
                 
-                <Link href="/settings">
-                  <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
-                    <Settings size={18} className="mr-2 text-purple-400" />
-                    Paramètres
-                  </a>
+                <Link href="/settings" className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                  <Settings size={18} className="mr-2 text-purple-400" />
+                  Paramètres
                 </Link>
                 
                 {isAdmin && (
-                  <Link href="/admin">
-                    <a className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
-                      <ShieldCheck size={18} className="mr-2 text-green-400" />
-                      Administration
-                    </a>
+                  <Link href="/admin" className="flex items-center py-2 px-3 rounded-md text-gray-200 hover:bg-gray-800">
+                    <ShieldCheck size={18} className="mr-2 text-green-400" />
+                    Administration
                   </Link>
                 )}
                 

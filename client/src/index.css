@@ -109,7 +109,7 @@
   }
   
   .mobile-logo {
-    @apply flex items-center space-x-2 text-xl text-white font-bold;
+    @apply flex items-center text-xl font-bold;
   }
   
   .mobile-content {

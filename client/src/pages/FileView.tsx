@@ -208,8 +208,8 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       </header>
 
       {/* Breadcrumb & Tools */}
-      {/* NOTE DEV par Jimmy: La photo de profil ne se met pas à jour correctement après un changement */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10 md:top-0 top-14">
+      {/* Mobile and desktop header spacing fixed */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-14 md:top-0 z-10">
         <div className="flex items-center mb-2 sm:mb-0">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-1 text-sm">
