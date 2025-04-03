@@ -48,7 +48,7 @@ export default function MobileHeader({ refreshData }: MobileHeaderProps) {
   return (
     <div className="mobile-header">
       <div className="mobile-logo">
-        <img src="/generated-icon.png" alt="DropStore" className="w-7 h-7 mr-2" />
+        <img src="/generated-icon.png" alt="DropStore" className="w-7 h-7 mr-3" />
         <span className="gradient-heading">{getPageTitle()}</span>
       </div>
       
