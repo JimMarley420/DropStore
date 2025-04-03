@@ -108,7 +108,7 @@ export default function FileList({ folders, files, section }: FileListProps) {
           </div>
           <div className="col-span-2 hidden md:flex items-center text-gray-400 text-sm">-</div>
           <div className="col-span-3 md:col-span-2 flex items-center text-gray-400 text-sm">
-            {formatDate(folder.updatedAt)}
+            {folder.updatedAt ? formatDate(folder.updatedAt) : 'Unknown date'}
           </div>
           <div className="col-span-3 md:col-span-2 flex items-center justify-end space-x-1">
             <button
@@ -190,7 +190,7 @@ export default function FileList({ folders, files, section }: FileListProps) {
             {formatFileSize(file.size)}
           </div>
           <div className="col-span-3 md:col-span-2 flex items-center text-gray-400 text-sm">
-            {formatDate(file.updatedAt)}
+            {file.updatedAt ? formatDate(file.updatedAt) : 'Unknown date'}
           </div>
           <div className="col-span-3 md:col-span-2 flex items-center justify-end space-x-1">
             <button
