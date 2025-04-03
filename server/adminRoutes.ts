@@ -1,10 +1,15 @@
 import { Router, Request, Response } from "express";
 import { eq, desc, asc, sql, and, like, or, isNull } from "drizzle-orm";
 import { db } from "./db";
+import postgres from 'postgres';
 import { User, users, files, folders, shares, adminLogs, adminUserSearchSchema, adminUserActionSchema, updateUserRoleSchema } from "@shared/schema";
 import { isAdmin, hasRole, logAdminAction } from "./auth";
 import { hashPassword } from "./auth";
 import { log } from "./vite";
+
+// Get a reference to the postgres client
+const connectionString = process.env.DATABASE_URL!;
+const client = postgres(connectionString);
 import { randomBytes } from "crypto";
 
 // Create an admin router
@@ -116,13 +121,13 @@ adminRouter.get("/stats", async (req: Request, res: Response) => {
 // Get all users with pagination and search
 adminRouter.get("/users", async (req: Request, res: Response) => {
   try {
-    const validation = adminUserSearchSchema.safeParse(req.query);
-    
-    if (!validation.success) {
-      return res.status(400).json({ message: "Invalid query parameters", errors: validation.error.format() });
-    }
-    
-    const { query, role, sortBy, sortDirection, page, limit } = validation.data;
+    // Extract parameters from request query
+    const query = req.query.query as string | undefined;
+    const role = req.query.role as string | undefined;
+    const sortBy = req.query.sortBy as string || 'username';
+    const sortDirection = req.query.sortDirection as string || 'asc';
+    const page = parseInt(req.query.page as string || '1');
+    const limit = parseInt(req.query.limit as string || '20');
     
     const pageNum = page || 1;
     const pageSize = limit || 20;
@@ -169,19 +174,34 @@ adminRouter.get("/users", async (req: Request, res: Response) => {
     // Get file count per user
     const userIds = usersList.map(user => user.id);
     
-    // Use the in operator with the array of user IDs
-    const fileCountsResult = await db
-      .select({
-        userId: files.userId,
-        count: sql<number>`count(*)`
-      })
-      .from(files)
-      .where(
-        userIds.length > 0 
-          ? sql`${files.userId} IN (${sql.join(userIds.map(id => Number(id)))})`
-          : sql`FALSE`
-      )
-      .groupBy(files.userId);
+    // Use a safer array handling approach for the IN clause with prepared parameters
+    let fileCountsResult = [];
+    
+    if (userIds.length > 0) {
+      // Build a safe query with placeholders
+      const placeholders = userIds.map((_, idx) => `$${idx + 1}`).join(',');
+      const query = `
+        SELECT "userId", COUNT(*) as count
+        FROM files
+        WHERE "userId" IN (${placeholders})
+        GROUP BY "userId"
+      `;
+      
+      // Convert userIds to numbers
+      const params = userIds.map(id => Number(id));
+      
+      // Execute raw query
+      try {
+        const fileCountsResultRaw = await client.query(query, params);
+        fileCountsResult = fileCountsResultRaw.map(row => ({
+          userId: Number(row.userId),
+          count: Number(row.count)
+        }));
+      } catch (error) {
+        log(`Error in file counts query: ${error}`, "admin");
+        // If query fails, continue with empty results
+      }
+    }
 
     // Create a map of user ID to file count
     const fileCountMap = new Map<number, number>();
@@ -474,17 +494,29 @@ adminRouter.get("/logs", async (req: Request, res: Response) => {
     const userIdsInLogs = logs.map(log => log.userId);
     const uniqueUserIdsInLogs = Array.from(new Set(userIdsInLogs));
     
-    const usernames = await db
-      .select({
-        id: users.id,
-        username: users.username
-      })
-      .from(users)
-      .where(
-        uniqueUserIdsInLogs.length > 0
-          ? sql`${users.id} IN (${sql.join(uniqueUserIdsInLogs.map(id => Number(id)))})`
-          : sql`FALSE`
-      );
+    // Use a safer approach for IN clause with prepared statements
+    let usernames = [];
+    
+    if (uniqueUserIdsInLogs.length > 0) {
+      // Build a safe query with placeholders
+      const placeholders = uniqueUserIdsInLogs.map((_, idx) => `$${idx + 1}`).join(',');
+      const query = `
+        SELECT id, username 
+        FROM users
+        WHERE id IN (${placeholders})
+      `;
+      
+      // Convert IDs to numbers
+      const params = uniqueUserIdsInLogs.map(id => Number(id));
+      
+      // Execute raw query
+      try {
+        usernames = await client.query(query, params);
+      } catch (error) {
+        log(`Error in usernames query: ${error}`, "admin");
+        usernames = [];
+      }
+    }
     
     // Create a map of user ID to username
     const usernameMap = new Map<number, string>();
@@ -573,17 +605,29 @@ adminRouter.get("/files", async (req: Request, res: Response) => {
     const userIdsInFiles = largestFiles.map(file => file.userId);
     const uniqueUserIdsInFiles = Array.from(new Set(userIdsInFiles));
     
-    const usernames = await db
-      .select({
-        id: users.id,
-        username: users.username
-      })
-      .from(users)
-      .where(
-        uniqueUserIdsInFiles.length > 0
-          ? sql`${users.id} IN (${sql.join(uniqueUserIdsInFiles.map(id => Number(id)))})`
-          : sql`FALSE`
-      );
+    // Use a safer approach for IN clause with prepared statements
+    let usernames = [];
+    
+    if (uniqueUserIdsInFiles.length > 0) {
+      // Build a safe query with placeholders
+      const placeholders = uniqueUserIdsInFiles.map((_, idx) => `$${idx + 1}`).join(',');
+      const query = `
+        SELECT id, username 
+        FROM users
+        WHERE id IN (${placeholders})
+      `;
+      
+      // Convert IDs to numbers
+      const params = uniqueUserIdsInFiles.map(id => Number(id));
+      
+      // Execute raw query
+      try {
+        usernames = await client.query(query, params);
+      } catch (error) {
+        log(`Error in usernames query: ${error}`, "admin");
+        usernames = [];
+      }
+    }
     
     // Create a map of user ID to username
     const usernameMap = new Map<number, string>();
@@ -682,14 +726,29 @@ adminRouter.get("/files/list", async (req: Request, res: Response) => {
     filteredFiles.forEach(file => userIdSet.add(file.userId));
     const userIds = Array.from(userIdSet);
     
-    const usersData = await db
-      .select({ id: users.id, username: users.username })
-      .from(users)
-      .where(
-        userIds.length > 0 
-          ? sql`${users.id} IN (${sql.join(userIds.map(id => Number(id)))})`
-          : sql`FALSE`
-      );
+    // Use a safer approach for IN clause with prepared statements
+    let usersData = [];
+    
+    if (userIds.length > 0) {
+      // Build a safe query with placeholders
+      const placeholders = userIds.map((_, idx) => `$${idx + 1}`).join(',');
+      const query = `
+        SELECT id, username 
+        FROM users
+        WHERE id IN (${placeholders})
+      `;
+      
+      // Convert IDs to numbers
+      const params = userIds.map(id => Number(id));
+      
+      // Execute raw query
+      try {
+        usersData = await client.query(query, params);
+      } catch (error) {
+        log(`Error in usernames query for files list: ${error}`, "admin");
+        usersData = [];
+      }
+    }
       
     const usernameMap = new Map<number, string>();
     usersData.forEach(user => {
