@@ -169,16 +169,18 @@ adminRouter.get("/users", async (req: Request, res: Response) => {
     // Get file count per user
     const userIds = usersList.map(user => user.id);
     
-    // Assurez-vous que tous les IDs sont des nombres
-    const userIdsNumbers = userIds.map(id => Number(id));
-    
+    // Use the in operator with the array of user IDs
     const fileCountsResult = await db
       .select({
         userId: files.userId,
         count: sql<number>`count(*)`
       })
       .from(files)
-      .where(sql`${files.userId} = ANY(ARRAY[${userIdsNumbers}]::integer[])`)
+      .where(
+        userIds.length > 0 
+          ? sql`${files.userId} IN (${sql.join(userIds.map(id => Number(id)))})`
+          : sql`FALSE`
+      )
       .groupBy(files.userId);
 
     // Create a map of user ID to file count
@@ -472,16 +474,17 @@ adminRouter.get("/logs", async (req: Request, res: Response) => {
     const userIdsInLogs = logs.map(log => log.userId);
     const uniqueUserIdsInLogs = Array.from(new Set(userIdsInLogs));
     
-    // Assurez-vous que tous les IDs sont des nombres
-    const userIdsInLogsNumbers = uniqueUserIdsInLogs.map(id => Number(id));
-    
     const usernames = await db
       .select({
         id: users.id,
         username: users.username
       })
       .from(users)
-      .where(sql`${users.id} = ANY(ARRAY[${userIdsInLogsNumbers}]::integer[])`);
+      .where(
+        uniqueUserIdsInLogs.length > 0
+          ? sql`${users.id} IN (${sql.join(uniqueUserIdsInLogs.map(id => Number(id)))})`
+          : sql`FALSE`
+      );
     
     // Create a map of user ID to username
     const usernameMap = new Map<number, string>();
@@ -570,16 +573,17 @@ adminRouter.get("/files", async (req: Request, res: Response) => {
     const userIdsInFiles = largestFiles.map(file => file.userId);
     const uniqueUserIdsInFiles = Array.from(new Set(userIdsInFiles));
     
-    // Assurez-vous que tous les IDs sont des nombres
-    const userIdsInFilesNumbers = uniqueUserIdsInFiles.map(id => Number(id));
-    
     const usernames = await db
       .select({
         id: users.id,
         username: users.username
       })
       .from(users)
-      .where(sql`${users.id} = ANY(ARRAY[${userIdsInFilesNumbers}]::integer[])`);
+      .where(
+        uniqueUserIdsInFiles.length > 0
+          ? sql`${users.id} IN (${sql.join(uniqueUserIdsInFiles.map(id => Number(id)))})`
+          : sql`FALSE`
+      );
     
     // Create a map of user ID to username
     const usernameMap = new Map<number, string>();
@@ -681,7 +685,11 @@ adminRouter.get("/files/list", async (req: Request, res: Response) => {
     const usersData = await db
       .select({ id: users.id, username: users.username })
       .from(users)
-      .where(userIds.length > 0 ? sql`${users.id} IN (${userIds.join(',')})` : sql`FALSE`);
+      .where(
+        userIds.length > 0 
+          ? sql`${users.id} IN (${sql.join(userIds.map(id => Number(id)))})`
+          : sql`FALSE`
+      );
       
     const usernameMap = new Map<number, string>();
     usersData.forEach(user => {
