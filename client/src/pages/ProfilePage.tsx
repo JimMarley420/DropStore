@@ -206,14 +206,14 @@ export default function ProfilePage() {
           </Link>
 
           <div className="flex items-center">
-            <Link to="/">
-              <div>
-                <Button variant="ghost" size="sm" className="text-gray-300 mr-2">
+            <div>
+              <Link to="/" className="inline-flex">
+                <div className="flex items-center py-1.5 px-3 text-sm rounded-md text-gray-300 hover:bg-gray-800/40">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Retour</span>
-                </Button>
-              </div>
-            </Link>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -228,7 +228,10 @@ export default function ProfilePage() {
           <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <div className="relative group">
               <Avatar className="w-32 h-32 glowing-border">
-                <AvatarImage src={user.avatarUrl || ""} alt={user.username} />
+                <AvatarImage 
+                  src={`${user.avatarUrl || ""}?${new Date().getTime()}`} 
+                  alt={user.username} 
+                />
                 <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl text-white">
                   {getInitials()}
                 </AvatarFallback>

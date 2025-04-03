@@ -199,7 +199,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
         >
           <div className="aspect-square bg-gray-900/60 flex items-center justify-center relative overflow-hidden">
             {/* Preview Image */}
-            {file.type && file.type.startsWith("image/") ? (
+            {file && file.type && file.type.startsWith("image/") ? (
               <img 
                 src={file.url} 
                 alt={file.name} 
@@ -209,8 +209,8 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                 }}
               />
             ) : (
-              <div className={`text-5xl ${getFileIcon(file.type || '').color}`}>
-                <i className={getFileIcon(file.type || '').icon}></i>
+              <div className={`text-5xl ${getFileIcon((file && file.type) || '').color}`}>
+                <i className={getFileIcon((file && file.type) || '').icon}></i>
               </div>
             )}
             
@@ -262,7 +262,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
             <h3 className="text-sm font-medium text-gray-200 truncate">{file.name}</h3>
             <div className="flex justify-between items-center mt-1">
               <span className="text-xs text-gray-400">{formatFileSize(file.size)}</span>
-              <span className="text-xs text-gray-400">{formatDate(file.updatedAt)}</span>
+              <span className="text-xs text-gray-400">{file.updatedAt ? formatDate(file.updatedAt) : 'Unknown date'}</span>
             </div>
           </div>
         </div>
