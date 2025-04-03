@@ -178,12 +178,12 @@ export default function FileList({ folders, files, section }: FileListProps) {
           onContextMenu={(e) => handleContextMenu(e, "file", file)}
         >
           <div className="col-span-6 flex items-center">
-            <div className={`text-xl mr-3 ${getFileIcon(file.type).color}`}>
-              <i className={getFileIcon(file.type).icon}></i>
+            <div className={`text-xl mr-3 ${getFileIcon(typeof file.type === 'string' ? file.type : '').color}`}>
+              <i className={getFileIcon(typeof file.type === 'string' ? file.type : '').icon}></i>
             </div>
             <div className="truncate">
               <span className="text-gray-300">{file.name}</span>
-              <div className="text-xs text-gray-500 mt-0.5">{file.type}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{typeof file.type === 'string' ? file.type : 'Unknown'}</div>
             </div>
           </div>
           <div className="col-span-2 hidden md:flex items-center text-gray-400 text-sm">

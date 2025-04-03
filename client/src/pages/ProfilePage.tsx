@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { formatBytes } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 const formSchema = updateProfileSchema.extend({
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères").optional(),
@@ -40,6 +40,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [, setLocation] = useLocation();
 
   // Get user storage stats
   const { data: storageData, isLoading: storageLoading } = useQuery<{ used: number; total: number }>({
@@ -207,12 +208,13 @@ export default function ProfilePage() {
 
           <div className="flex items-center">
             <div>
-              <Link to="/" className="inline-flex">
-                <div className="flex items-center py-1.5 px-3 text-sm rounded-md text-gray-300 hover:bg-gray-800/40">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Retour</span>
-                </div>
-              </Link>
+              <button 
+                onClick={() => setLocation("/")}
+                className="inline-flex items-center py-1.5 px-3 text-sm rounded-md text-gray-300 hover:bg-gray-800/40"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Retour</span>
+              </button>
             </div>
           </div>
         </div>
