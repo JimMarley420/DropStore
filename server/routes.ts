@@ -15,7 +15,7 @@ import {
   updateProfileSchema
 } from "@shared/schema";
 import adminRouter from "./adminRoutes";
-import { isAuthenticated } from "./auth";
+import { isAuthenticated, isAdmin } from "./auth";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -68,13 +68,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register admin routes
   app.use("/api/admin", adminRouter);
 
-  // Authentication middleware
-  const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    return res.status(401).json({ message: "Authentication required" });
-  };
+  // Remarque: Nous utilisons isAuthenticated depuis auth.ts, donc cette redéfinition locale est supprimée
+  // Utilisons le middleware d'authentification importé de auth.ts à la place
 
   // Middleware to set user ID from session
   app.use((req, _res, next) => {
@@ -124,29 +119,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/login", (req: Request, res: Response, next: NextFunction) => {
     try {
       const validatedData = loginSchema.parse(req.body);
+      log(`Login attempt for user: ${validatedData.username}`, 'auth-debug');
       
       // Use passport middleware for authentication
       passport.authenticate('local', (err: any, user: any, info: any) => {
         if (err) {
-          log(`Authentication error: ${err}`, 'auth');
+          log(`Authentication error: ${err}`, 'auth-debug');
           return res.status(500).json({ message: "Authentication failed" });
         }
         
         if (!user) {
+          log(`Login failed for user: ${validatedData.username}, reason: ${info?.message || "Invalid credentials"}`, 'auth-debug');
           return res.status(401).json({ message: info?.message || "Invalid credentials" });
         }
+        
+        // Log successful authentication
+        log(`User authenticated successfully: ${user.username}, role: ${user.role}`, 'auth-debug');
         
         // Establish session
         req.login(user, (err) => {
           if (err) {
-            log(`Login error: ${err}`, 'auth');
+            log(`Login error: ${err}`, 'auth-debug');
             return res.status(500).json({ message: "Failed to login" });
           }
-          return res.json(user);
+          
+          // Log session information
+          log(`Session established: ${req.sessionID}, user: ${user.username}, role: ${user.role}`, 'auth-debug');
+          
+          // Don't return the password
+          const { password, ...userWithoutPassword } = user;
+          return res.json(userWithoutPassword);
         });
       })(req, res, next);
     } catch (error: any) {
-      log(`Login validation error: ${error}`, 'auth');
+      log(`Login validation error: ${error}`, 'auth-debug');
       return res.status(400).json({ message: error.message || "Invalid login data" });
     }
   });

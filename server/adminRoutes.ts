@@ -11,7 +11,20 @@ import { randomBytes } from "crypto";
 const adminRouter = Router();
 
 // Middleware to ensure all routes in this router are protected
-adminRouter.use(isAdmin);
+adminRouter.use((req, res, next) => {
+  if (!req.isAuthenticated()) {
+    log(`Admin route access denied - not authenticated: ${req.url}`, "admin");
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+    log(`Admin route access denied - not admin: ${req.url}, user role: ${req.user.role}`, "admin");
+    return res.status(403).json({ message: "Admin access required" });
+  }
+  
+  log(`Admin route access granted for user: ${req.user.username}, role: ${req.user.role}, route: ${req.url}`, "admin");
+  next();
+});
 
 // Get system stats
 adminRouter.get("/stats", async (req: Request, res: Response) => {
@@ -603,6 +616,119 @@ adminRouter.get("/files", async (req: Request, res: Response) => {
     log(`Error fetching file statistics: ${error}`, "admin");
     return res.status(500).json({ message: "Failed to fetch file statistics" });
   }
+});
+
+// Get files list with pagination and filtering
+adminRouter.get("/files/list", async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const offset = (page - 1) * pageSize;
+    const type = req.query.type as string;
+    const status = req.query.status as string;
+    const query = req.query.query as string;
+
+    // Build where conditions
+    let whereConditions = [];
+    
+    if (type && type !== 'all') {
+      whereConditions.push(eq(files.type, type));
+    }
+    
+    if (status && status !== 'all') {
+      // Caster status au type approprié de fileStatusEnum
+      whereConditions.push(eq(files.status, status as any));
+    }
+    
+    if (query) {
+      whereConditions.push(like(files.name, `%${query}%`));
+    }
+
+    // Get filtered files with pagination
+    const whereClause = whereConditions.length > 0 
+      ? and(...whereConditions) 
+      : undefined;
+      
+    const filteredFiles = await db
+      .select({
+        id: files.id,
+        name: files.name,
+        userId: files.userId,
+        type: files.type,
+        size: files.size,
+        status: files.status,
+        createdAt: files.createdAt,
+        updatedAt: files.updatedAt
+        // La propriété downloads n'existe pas dans notre schéma
+      })
+      .from(files)
+      .where(whereClause)
+      .orderBy(desc(files.createdAt))
+      .limit(pageSize)
+      .offset(offset);
+      
+    // Get total count for pagination
+    const [{ count: total }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(files)
+      .where(whereClause);
+      
+    // Get usernames for files
+    const userIdSet = new Set<number>();
+    filteredFiles.forEach(file => userIdSet.add(file.userId));
+    const userIds = Array.from(userIdSet);
+    
+    const usersData = await db
+      .select({ id: users.id, username: users.username })
+      .from(users)
+      .where(userIds.length > 0 ? sql`${users.id} IN (${userIds.join(',')})` : sql`FALSE`);
+      
+    const usernameMap = new Map<number, string>();
+    usersData.forEach(user => {
+      usernameMap.set(user.id, user.username);
+    });
+    
+    // Add username to files
+    const filesWithUsernames = filteredFiles.map(file => ({
+      ...file,
+      username: usernameMap.get(file.userId) || `User #${file.userId}`
+    }));
+    
+    // Log the admin action
+    await logAdminAction(
+      req.user!.id, 
+      "view_files_list", 
+      "files", 
+      undefined,  // Changé de null à undefined pour correspondre au type attendu
+      `Viewed files list page ${page}, ${filesWithUsernames.length} results`
+    );
+
+    const totalPages = Math.ceil(total / pageSize);
+    
+    return res.json({
+      files: filesWithUsernames,
+      total,
+      page,
+      pageSize,
+      totalPages
+    });
+  } catch (error) {
+    log(`Error fetching files list: ${error}`, "admin");
+    return res.status(500).json({ message: "Failed to fetch files list" });
+  }
+});
+
+// Route de test pour vérifier l'authentification administrateur
+adminRouter.get("/test-auth", (req: Request, res: Response) => {
+  log(`Admin test route accessed by: ${req.user?.username}, role: ${req.user?.role}`, "admin");
+  res.status(200).json({
+    message: "Admin authentication successful",
+    user: {
+      id: req.user?.id,
+      username: req.user?.username,
+      role: req.user?.role
+    }
+  });
 });
 
 export default adminRouter;
