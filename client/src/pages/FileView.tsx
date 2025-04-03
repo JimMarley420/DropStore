@@ -224,7 +224,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               <Skeleton className="h-4 w-24 bg-gray-700/50" />
             ) : data?.breadcrumbs && section === 'folder' ? (
               data.breadcrumbs.slice(1).map((crumb: any, index: number) => (
-                <React.Fragment key={crumb.id}>
+                <span key={crumb.id}>
                   <span className="text-gray-500">/</span>
                   <button 
                     onClick={() => handleBreadcrumbClick(crumb.id)} 
@@ -234,7 +234,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
                   >
                     {crumb.name}
                   </button>
-                </React.Fragment>
+                </span>
               ))
             ) : section !== 'home' ? (
               <>

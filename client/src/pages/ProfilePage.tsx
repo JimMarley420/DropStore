@@ -175,8 +175,8 @@ export default function ProfilePage() {
       {/* Header */}
       <header className="border-b border-gray-700/30 gradient-card rounded-none shadow-lg sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href="/">
-            <a className="flex items-center hover-float">
+          <Link to="/">
+            <div className="flex items-center hover-float cursor-pointer">
               <div className="text-blue-400 text-3xl mr-2">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path 
@@ -202,15 +202,17 @@ export default function ProfilePage() {
                 </svg>
               </div>
               <h1 className="text-xl font-bold gradient-heading text-glow">DropStore</h1>
-            </a>
+            </div>
           </Link>
 
           <div className="flex items-center">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="text-gray-300 mr-2">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Retour</span>
-              </Button>
+            <Link to="/">
+              <div>
+                <Button variant="ghost" size="sm" className="text-gray-300 mr-2">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Retour</span>
+                </Button>
+              </div>
             </Link>
           </div>
         </div>

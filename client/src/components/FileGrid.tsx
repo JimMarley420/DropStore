@@ -199,7 +199,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
         >
           <div className="aspect-square bg-gray-900/60 flex items-center justify-center relative overflow-hidden">
             {/* Preview Image */}
-            {file.type.startsWith("image/") ? (
+            {file.type && file.type.startsWith("image/") ? (
               <img 
                 src={file.url} 
                 alt={file.name} 
@@ -209,8 +209,8 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                 }}
               />
             ) : (
-              <div className={`text-5xl ${getFileIcon(file.type).color}`}>
-                <i className={getFileIcon(file.type).icon}></i>
+              <div className={`text-5xl ${getFileIcon(file.type || '').color}`}>
+                <i className={getFileIcon(file.type || '').icon}></i>
               </div>
             )}
             
