@@ -105,8 +105,8 @@ interface FileListResponse {
 export default function FilesPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
-  const [fileType, setFileType] = useState('');
-  const [fileStatus, setFileStatus] = useState('');
+  const [fileType, setFileType] = useState('all');
+  const [fileStatus, setFileStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   
   // Récupérer les statistiques des fichiers
@@ -121,8 +121,8 @@ export default function FilesPage() {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.append('query', searchQuery);
-      if (fileType) params.append('type', fileType);
-      if (fileStatus) params.append('status', fileStatus);
+      if (fileType && fileType !== 'all') params.append('type', fileType);
+      if (fileStatus && fileStatus !== 'all') params.append('status', fileStatus);
       params.append('page', currentPage.toString());
       
       const res = await fetch(`/api/admin/files/list?${params.toString()}`);
@@ -502,7 +502,7 @@ export default function FilesPage() {
                   <SelectValue placeholder="Type de fichier" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="">Tous les types</SelectItem>
+                  <SelectItem value="all">Tous les types</SelectItem>
                   <SelectItem value="image">Images</SelectItem>
                   <SelectItem value="document">Documents</SelectItem>
                   <SelectItem value="video">Vidéos</SelectItem>
@@ -517,7 +517,7 @@ export default function FilesPage() {
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="">Tous les statuts</SelectItem>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
                   <SelectItem value="active">Actifs</SelectItem>
                   <SelectItem value="trashed">Corbeille</SelectItem>
                   <SelectItem value="deleted">Supprimés</SelectItem>
@@ -529,8 +529,8 @@ export default function FilesPage() {
                 className="border-gray-700 hover:bg-gray-700/50"
                 onClick={() => {
                   setSearchQuery('');
-                  setFileType('');
-                  setFileStatus('');
+                  setFileType('all');
+                  setFileStatus('all');
                   setCurrentPage(1);
                 }}
               >
