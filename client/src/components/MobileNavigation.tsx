@@ -17,22 +17,22 @@ export default function MobileNavigation() {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700/50 flex justify-around items-center py-2 z-10 gradient-card">
-      <Link href="/">
-        <a className={`flex flex-col items-center py-2 px-4 ${
+      <Link to="/">
+        <div className={`flex flex-col items-center py-2 px-4 ${
           section === "files" ? "text-blue-400" : "text-gray-400"
         }`}>
           <FolderIcon className="h-5 w-5" />
           <span className="text-xs mt-1">Fichiers</span>
-        </a>
+        </div>
       </Link>
       
-      <Link href="/recent">
-        <a className={`flex flex-col items-center py-2 px-4 ${
+      <Link to="/recent">
+        <div className={`flex flex-col items-center py-2 px-4 ${
           section === "recent" ? "text-blue-400" : "text-gray-400"
         }`}>
           <ClockIcon className="h-5 w-5" />
           <span className="text-xs mt-1">Récents</span>
-        </a>
+        </div>
       </Link>
       
       <button 
@@ -45,22 +45,22 @@ export default function MobileNavigation() {
         <PlusIcon className="h-6 w-6" />
       </button>
       
-      <Link href="/shared">
-        <a className={`flex flex-col items-center py-2 px-4 ${
+      <Link to="/shared">
+        <div className={`flex flex-col items-center py-2 px-4 ${
           section === "shared" ? "text-blue-400" : "text-gray-400"
         }`}>
           <ShareIcon className="h-5 w-5" />
           <span className="text-xs mt-1">Partagés</span>
-        </a>
+        </div>
       </Link>
       
-      <Link href="/favorites">
-        <a className={`flex flex-col items-center py-2 px-4 ${
+      <Link to="/favorites">
+        <div className={`flex flex-col items-center py-2 px-4 ${
           section === "favorites" ? "text-blue-400" : "text-gray-400"
         }`}>
           <StarIcon className="h-5 w-5" />
           <span className="text-xs mt-1">Favoris</span>
-        </a>
+        </div>
       </Link>
     </nav>
   );

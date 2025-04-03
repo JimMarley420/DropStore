@@ -208,8 +208,9 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
       </header>
 
       {/* Breadcrumb & Tools */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10 md:top-0 top-14">
-        <div className="flex items-center mb-3 sm:mb-0">
+      {/* NOTE DEV par Jimmy: La photo de profil ne se met pas à jour correctement après un changement */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 gradient-card rounded-none shadow-md sticky top-0 z-10 md:top-0 top-14">
+        <div className="flex items-center mb-2 sm:mb-0">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-1 text-sm">
             <button 
@@ -247,7 +248,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center flex-wrap gap-2 sm:space-x-3">
           {/* Refresh Button */}
           <Button
             variant="ghost"
@@ -269,8 +270,8 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
             title="Rafraîchir"
             disabled={isLoading}
           >
-            <RefreshCw size={16} className={`mr-1 ${isLoading ? 'animate-spin' : ''}`} />
-            <span className="ml-1 hidden sm:inline">Rafraîchir</span>
+            <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline ml-1">Rafraîchir</span>
           </Button>
           
           {/* View Toggle */}
@@ -308,7 +309,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
                 className="border border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30 hover-float"
                 title="Trier"
               >
-                <SortDesc size={16} className="mr-1" />
+                <SortDesc size={16} />
                 <span className="ml-1 hidden sm:inline">Trier</span>
               </Button>
             </DropdownMenuTrigger>
@@ -350,7 +351,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
               setModalData({ folderId: folderId ? parseInt(folderId) : null });
             }}
           >
-            <FolderPlus size={16} className="mr-1 text-blue-400" />
+            <FolderPlus size={16} className={isLoading ? 'animate-spin' : ''} />
             <span className="ml-1 hidden sm:inline">Nouveau dossier</span>
           </Button>
 
