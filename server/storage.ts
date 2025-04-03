@@ -713,26 +713,57 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteFolder(id: number): Promise<void> {
-    // Delete all files in the folder
-    await db
-      .delete(files)
-      .where(eq(files.folderId, id));
-    
-    // Get all subfolders
-    const subfolders = await db
-      .select()
-      .from(folders)
-      .where(eq(folders.parentId, id));
+    try {
+      // Get all files in the folder
+      const folderFiles = await db
+        .select()
+        .from(files)
+        .where(eq(files.folderId, id));
       
-    // Delete subfolders recursively
-    for (const subfolder of subfolders) {
-      await this.deleteFolder(subfolder.id);
+      // Delete shares for each file first (to handle foreign key constraints)
+      for (const file of folderFiles) {
+        try {
+          await db
+            .delete(shares)
+            .where(eq(shares.fileId, file.id));
+        } catch (error) {
+          log(`Error deleting shares for file ${file.id}: ${error}`, "storage");
+        }
+      }
+      
+      // Delete folder shares
+      try {
+        await db
+          .delete(shares)
+          .where(eq(shares.folderId, id));
+      } catch (error) {
+        log(`Error deleting shares for folder ${id}: ${error}`, "storage");
+      }
+      
+      // Now delete all files in the folder
+      await db
+        .delete(files)
+        .where(eq(files.folderId, id));
+      
+      // Get all subfolders
+      const subfolders = await db
+        .select()
+        .from(folders)
+        .where(eq(folders.parentId, id));
+        
+      // Delete subfolders recursively
+      for (const subfolder of subfolders) {
+        await this.deleteFolder(subfolder.id);
+      }
+      
+      // Delete the folder itself
+      await db
+        .delete(folders)
+        .where(eq(folders.id, id));
+    } catch (error) {
+      log(`Error deleting folder: ${error}`, "storage");
+      throw new Error(`Failed to delete folder: ${error.message || "Unknown error"}`);
     }
-    
-    // Delete the folder itself
-    await db
-      .delete(folders)
-      .where(eq(folders.id, id));
   }
 
   async getFolderPath(folderId: number | null): Promise<Array<{ id: number; name: string }>> {
@@ -830,10 +861,20 @@ export class DatabaseStorage implements IStorage {
     // Update user storage
     await this.updateUserStorage(file.userId, -file.size);
     
-    // Delete from database
-    await db
-      .delete(files)
-      .where(eq(files.id, id));
+    try {
+      // First, delete any shares associated with this file
+      await db
+        .delete(shares)
+        .where(eq(shares.fileId, id));
+      
+      // Then delete the file
+      await db
+        .delete(files)
+        .where(eq(files.id, id));
+    } catch (error) {
+      log(`Error deleting file from database: ${error}`, "storage");
+      throw new Error(`Failed to delete file: ${error.message || "Unknown error"}`);
+    }
   }
 
   async moveFileToTrash(id: number): Promise<File> {
