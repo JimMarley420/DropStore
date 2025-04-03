@@ -9,6 +9,7 @@ import {
 
 export type ViewMode = "grid" | "list";
 export type SortBy = "name" | "modified" | "size" | "type";
+export type FileTypeFilter = "all" | "image" | "document" | "video" | "audio" | "archive" | "other";
 
 interface FileContextType {
   viewMode: ViewMode;
@@ -17,6 +18,8 @@ interface FileContextType {
   setCurrentPath: (path: string) => void;
   sortBy: SortBy;
   setSortBy: (sort: SortBy) => void;
+  fileTypeFilter: FileTypeFilter;
+  setFileTypeFilter: (filter: FileTypeFilter) => void;
   selectedItems: Array<{ id: number; type: "file" | "folder" }>;
   setSelectedItems: (items: Array<{ id: number; type: "file" | "folder" }>) => void;
   contextMenuOpen: boolean;
@@ -43,6 +46,7 @@ export const FileContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [currentPath, setCurrentPath] = useState<string>("/");
   const [sortBy, setSortBy] = useState<SortBy>("name");
+  const [fileTypeFilter, setFileTypeFilter] = useState<FileTypeFilter>("all");
   const [selectedItems, setSelectedItems] = useState<Array<{ id: number; type: "file" | "folder" }>>([]);
   const [contextMenuOpen, setContextMenuOpen] = useState<boolean>(false);
   const [contextMenuPosition, setContextMenuPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -62,6 +66,8 @@ export const FileContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setCurrentPath,
         sortBy,
         setSortBy,
+        fileTypeFilter,
+        setFileTypeFilter,
         selectedItems,
         setSelectedItems,
         contextMenuOpen,

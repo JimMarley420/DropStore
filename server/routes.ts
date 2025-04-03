@@ -25,10 +25,13 @@ import { log } from "./vite";
 import { setupAuth, hashPassword } from "./auth";
 import passport from "passport";
 
-// Configure multer for file storage
+// Configure multer for file storage avec un chemin persistant
+// Utilisation d'un chemin absolu pour assurer la persistance
 const uploadDir = path.join(process.cwd(), "uploads");
+console.log(`Répertoire d'upload configuré: ${uploadDir}`);
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
+  console.log(`Répertoire d'upload créé: ${uploadDir}`);
 }
 
 const storage2 = multer.diskStorage({
@@ -844,38 +847,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== Trash API Routes =====
   
   // Get trash contents
-  app.get("/api/trash", async (req: Request, res: Response) => {
+  app.get("/api/trash", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
-      // Get trashed files
-      const trashedFiles = Array.from((await storage as any).files.values())
-        .filter((file) => file.userId === userId && file.status === "trashed")
-        .map((file) => ({ ...file, type: "file" }));
+      // Utiliser searchFiles avec type=trashed pour obtenir les fichiers dans la corbeille
+      const trashedFiles = await storage.searchFiles(userId, "", "trashed");
       
-      return res.json(trashedFiles);
-    } catch (error) {
+      // Formater les fichiers pour le frontend
+      const formattedTrashedFiles = trashedFiles.map(file => ({ 
+        ...file, 
+        type: "file" 
+      }));
+      
+      return res.json(formattedTrashedFiles);
+    } catch (error: any) {
       console.error("Error fetching trash contents:", error);
       return res.status(500).json({ message: "Failed to fetch trash contents" });
     }
   });
   
   // Empty trash
-  app.delete("/api/trash", async (req: Request, res: Response) => {
+  app.delete("/api/trash", isAuthenticated, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     
     try {
-      // Get all trashed files
-      const trashedFiles = Array.from((await storage as any).files.values())
-        .filter((file) => file.userId === userId && file.status === "trashed");
+      // Utiliser searchFiles pour obtenir les fichiers dans la corbeille
+      const trashedFiles = await storage.searchFiles(userId, "", "trashed");
       
-      // Delete each file permanently
+      // Supprimer définitivement chaque fichier
       for (const file of trashedFiles) {
         await storage.deleteFile(file.id);
       }
       
       return res.status(204).send();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error emptying trash:", error);
       return res.status(500).json({ message: "Failed to empty trash" });
     }

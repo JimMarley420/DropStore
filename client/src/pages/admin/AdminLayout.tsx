@@ -105,6 +105,18 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
           </ul>
         </nav>
         
+        {/* Bouton retour au site */}
+        <div className="px-4 mt-4 mb-16">
+          <Link href="/">
+            <a className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-800 hover:bg-gray-700 transition-colors text-gray-200 border border-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+              Retour au site
+            </a>
+          </Link>
+        </div>
+        
         {/* Informations utilisateur */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700/30">
           <div className="flex items-center space-x-3">
