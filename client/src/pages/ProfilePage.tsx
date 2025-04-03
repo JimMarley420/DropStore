@@ -59,6 +59,41 @@ export default function ProfilePage() {
     },
   });
 
+  // Upload avatar mutation
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      
+      const res = await fetch("/api/user/avatar", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to upload avatar");
+      }
+      
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/user"], data);
+      setSelectedFile(null);
+      toast({
+        title: "Avatar mis à jour",
+        description: "Votre photo de profil a été mise à jour avec succès",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erreur",
+        description: error.message || "Une erreur est survenue lors de la mise à jour de l'avatar",
+        variant: "destructive",
+      });
+    },
+  });
+  
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: FormData) => {
@@ -210,6 +245,7 @@ export default function ProfilePage() {
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setSelectedFile(e.target.files[0]);
+                        uploadAvatarMutation.mutate(e.target.files[0]);
                       }
                     }} 
                   />

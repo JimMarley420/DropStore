@@ -30,7 +30,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserStorage(userId: number, sizeChange: number): Promise<User>;
-  updateUser(userId: number, data: { fullName?: string | null; email?: string }): Promise<User>;
+  updateUser(userId: number, data: { fullName?: string | null; email?: string; password?: string; avatarUrl?: string | null }): Promise<User>;
 
   // Folder operations
   getFolderById(id: number): Promise<Folder | undefined>;
@@ -55,6 +55,7 @@ export interface IStorage {
   // Share operations
   createShare(share: InsertShare): Promise<Share>;
   getShareByToken(token: string): Promise<Share | undefined>;
+  getSharesByUserId(userId: number): Promise<Share[]>;
   deleteShare(id: number): Promise<void>;
   
   // Stats
@@ -474,6 +475,12 @@ export class MemStorage implements IStorage {
   async getShareByToken(token: string): Promise<Share | undefined> {
     return Array.from(this.shares.values()).find(
       (share) => share.token === token
+    );
+  }
+  
+  async getSharesByUserId(userId: number): Promise<Share[]> {
+    return Array.from(this.shares.values()).filter(
+      (share) => share.userId === userId
     );
   }
 
@@ -933,6 +940,10 @@ export class DatabaseStorage implements IStorage {
   async getShareByToken(token: string): Promise<Share | undefined> {
     const [share] = await db.select().from(shares).where(eq(shares.token, token));
     return share;
+  }
+
+  async getSharesByUserId(userId: number): Promise<Share[]> {
+    return db.select().from(shares).where(eq(shares.userId, userId));
   }
 
   async deleteShare(id: number): Promise<void> {

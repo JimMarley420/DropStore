@@ -217,6 +217,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
+      // Handle password update separately if needed
+      if (validatedData.password) {
+        validatedData.password = await hashPassword(validatedData.password);
+      }
+      
       // Update user profile
       const updatedUser = await storage.updateUser(userId, validatedData);
       
@@ -226,6 +231,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error updating user profile:", error);
       return res.status(400).json({ message: error.message || "Failed to update profile" });
+    }
+  });
+  
+  // Upload avatar
+  app.post("/api/user/avatar", isAuthenticated, upload.single("avatar"), async (req: Request, res: Response) => {
+    const userId = (req as any).userId;
+    
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+      
+      // Check if the file is an image
+      if (!req.file.mimetype.startsWith("image/")) {
+        return res.status(400).json({ message: "File must be an image" });
+      }
+      
+      // Get user
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Save avatar path
+      const avatarPath = path.relative(uploadDir, req.file.path);
+      const updatedUser = await storage.updateUser(userId, {
+        avatarUrl: `/api/files/avatars/${path.basename(req.file.path)}`
+      });
+      
+      // Don't send password back
+      const { password, ...userProfile } = updatedUser;
+      return res.json(userProfile);
+    } catch (error: any) {
+      console.error("Error uploading avatar:", error);
+      return res.status(400).json({ message: error.message || "Failed to upload avatar" });
     }
   });
 
@@ -772,6 +812,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating share:", error);
       return res.status(400).json({ message: `Failed to create share: ${error.message}` });
+    }
+  });
+  
+  // Get user's shared items
+  app.get("/api/shares/me", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const userShares = await storage.getSharesByUserId(userId);
+      
+      // Get details for each shared item
+      const sharesWithItems = await Promise.all(
+        userShares.map(async (share) => {
+          let item = null;
+          
+          if (share.fileId) {
+            item = await storage.getFileById(share.fileId);
+          } else if (share.folderId) {
+            item = await storage.getFolderById(share.folderId);
+          }
+          
+          if (!item) return null;
+          
+          return {
+            ...share,
+            item: {
+              ...item,
+              shareToken: share.token,
+              shareUrl: `/share/${share.token}`
+            }
+          };
+        })
+      );
+      
+      // Filter out null items (shares that no longer have valid items)
+      const validShares = sharesWithItems.filter(Boolean);
+      
+      // Format response to match the structure expected by the FileView component
+      const result = {
+        folders: [],
+        files: validShares.map(share => share!.item),
+        breadcrumbs: [{ id: null, name: "Shared" }]
+      };
+      
+      return res.json(result);
+    } catch (error) {
+      console.error("Error fetching user shares:", error);
+      return res.status(500).json({ message: "Failed to retrieve shares" });
     }
   });
   

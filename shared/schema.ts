@@ -162,6 +162,8 @@ export const registerSchema = z.object({
 export const updateProfileSchema = z.object({
   fullName: z.string().nullable().optional(),
   email: z.string().email("Please enter a valid email address"),
+  avatarUrl: z.string().nullable().optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(),
 });
 
 export const insertFolderSchema = createInsertSchema(folders).pick({
