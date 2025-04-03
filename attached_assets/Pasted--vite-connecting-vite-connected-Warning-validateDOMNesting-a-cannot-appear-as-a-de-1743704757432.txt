@@ -1,0 +1,74 @@
+[vite] connecting...
+[vite] connected.
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:337:18
+    at div
+    at header
+    at div
+    at ProfilePage (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/ProfilePage.tsx:52:36)
+    at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+    at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+    at Router
+    at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+    at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+    at App
+at a
+at a
+at https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:337:18
+at div
+at header
+at div
+at ProfilePage (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/pages/ProfilePage.tsx:52:36)
+at Route (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:323:16)
+at ProtectedRoute (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/lib/protected-route.tsx:22:3)
+at Switch (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=63b7d305:379:17)
+at Router
+at FileContextProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/context/FileContext.tsx:20:39)
+at AuthProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/src/hooks/use-auth.tsx:27:32)
+at QueryClientProvider (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=63b7d305:2805:3)
+at App
+at t.value (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://586190ea-634e-4e1c-9a58-dab243e90187-00-2uvwg93xgl8rr.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Storage
+9.63 MB / 1.86 GB
+Profile
+My Files
+Recent
+Shared
+Favorites
+Trash
+Votre compte
+Profil
+Administration
+Upload
+DropStore
+Search files or folders...
+
+
+
+J
+Accueil
+
+Rafraîchir
+
+
+
+Trier
+
+Nouveau dossier
+Tous les fichiers
+Images
+Documents
+Vidéos
+Audio
+Archives
+
+tsrcrew
+0 items
+

@@ -12,10 +12,6 @@ import {
   ShareIcon, 
   StarIcon, 
   TrashIcon, 
-  ImageIcon, 
-  FileTextIcon, 
-  VideoIcon, 
-  MusicIcon, 
   UploadCloudIcon,
   User,
   ShieldCheck
@@ -48,99 +44,68 @@ export default function Sidebar() {
       <nav className="flex-1">
         <ul>
           <li className="mb-1">
-            <Link href="/">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "home" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <FolderIcon className="mr-3 h-5 w-5" />
                 My Files
-              </a>
+              </div>
             </Link>
           </li>
           <li className="mb-1">
-            <Link href="/recent">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/recent">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "recent" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <ClockIcon className="mr-3 h-5 w-5" />
                 Recent
-              </a>
+              </div>
             </Link>
           </li>
           <li className="mb-1">
-            <Link href="/shared">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/shared">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "shared" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <ShareIcon className="mr-3 h-5 w-5" />
                 Shared
-              </a>
+              </div>
             </Link>
           </li>
           <li className="mb-1">
-            <Link href="/favorites">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/favorites">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "favorites" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <StarIcon className="mr-3 h-5 w-5" />
                 Favorites
-              </a>
+              </div>
             </Link>
           </li>
           <li className="mb-1">
-            <Link href="/trash">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/trash">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "trash" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <TrashIcon className="mr-3 h-5 w-5" />
                 Trash
-              </a>
+              </div>
             </Link>
           </li>
         </ul>
         
         <div className="border-t border-gray-700/30 my-4"></div>
-        
-        {/* Quick Access Categories */}
-        <div className="px-4 mb-2">
-          <h3 className="text-xs uppercase text-blue-400 font-medium">Categories</h3>
-        </div>
-        <ul>
-          <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
-              <ImageIcon className="mr-3 h-5 w-5 text-blue-500" />
-              Images
-            </a>
-          </li>
-          <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
-              <FileTextIcon className="mr-3 h-5 w-5 text-green-500" />
-              Documents
-            </a>
-          </li>
-          <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
-              <VideoIcon className="mr-3 h-5 w-5 text-red-500" />
-              Videos
-            </a>
-          </li>
-          <li className="mb-1">
-            <a href="#" className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800/40 rounded-md mx-2">
-              <MusicIcon className="mr-3 h-5 w-5 text-purple-500" />
-              Audio
-            </a>
-          </li>
-        </ul>
       </nav>
       
       {/* User Section */}
@@ -152,29 +117,29 @@ export default function Sidebar() {
       
       <ul className="mb-3">
         <li className="mb-1">
-          <Link href="/profile">
-            <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+          <Link to="/profile">
+            <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
               section === "profile" 
                 ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                 : "text-gray-300 hover:bg-gray-800/40"
             }`}>
               <User className="mr-3 h-5 w-5 text-blue-400" />
               Profil
-            </a>
+            </div>
           </Link>
         </li>
         
         {isAdmin && (
           <li className="mb-1">
-            <Link href="/admin">
-              <a className={`flex items-center px-4 py-2 rounded-md mx-2 ${
+            <Link to="/admin">
+              <div className={`flex items-center px-4 py-2 rounded-md mx-2 ${
                 section === "admin" 
                   ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 text-blue-400 font-medium" 
                   : "text-gray-300 hover:bg-gray-800/40"
               }`}>
                 <ShieldCheck className="mr-3 h-5 w-5 text-green-400" />
                 Administration
-              </a>
+              </div>
             </Link>
           </li>
         )}
