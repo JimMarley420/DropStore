@@ -128,12 +128,12 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
       {folders.map((folder) => (
         <div
           key={folder.id}
-          className="group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-md transition cursor-pointer"
+          className="group bg-gray-800/90 border border-gray-700/50 rounded-lg overflow-hidden hover:shadow-lg hover-float transition cursor-pointer backdrop-blur-sm"
           onClick={() => handleFolderClick(folder)}
           onContextMenu={(e) => handleContextMenu(e, "folder", folder)}
         >
-          <div className="aspect-square bg-neutral-50 flex items-center justify-center relative overflow-hidden">
-            <div className="text-5xl text-neutral-400">
+          <div className="aspect-square bg-gray-900/60 flex items-center justify-center relative overflow-hidden">
+            <div className="text-5xl text-blue-400">
               <i className="ri-folder-fill"></i>
             </div>
             
@@ -142,12 +142,13 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                  className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300"
                 >
                   <MoreHorizontal size={16} />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="bg-gray-800 border-gray-700 text-gray-200">
                   <DropdownMenuItem
+                    className="hover:bg-gray-700 focus:bg-gray-700"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveModal("rename");
@@ -157,6 +158,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                     Rename
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    className="hover:bg-gray-700 focus:bg-gray-700"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveModal("share");
@@ -165,9 +167,9 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                   >
                     Share
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-gray-700" />
                   <DropdownMenuItem
-                    className="text-red-500 focus:text-red-500"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-900/30 focus:bg-red-900/30 focus:text-red-300"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveModal("delete");
@@ -181,8 +183,8 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
             </div>
           </div>
           <div className="p-3">
-            <h3 className="text-sm font-medium text-neutral-800 truncate">{folder.name}</h3>
-            <p className="text-xs text-neutral-500 mt-1">{folder.itemCount} items</p>
+            <h3 className="text-sm font-medium text-gray-200 truncate">{folder.name}</h3>
+            <p className="text-xs text-gray-400 mt-1">{folder.itemCount} items</p>
           </div>
         </div>
       ))}
@@ -191,11 +193,11 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
       {files.map((file) => (
         <div
           key={file.id}
-          className="group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-md transition cursor-pointer"
+          className="group bg-gray-800/90 border border-gray-700/50 rounded-lg overflow-hidden hover:shadow-lg hover-float transition cursor-pointer backdrop-blur-sm"
           onClick={() => handleFileClick(file)}
           onContextMenu={(e) => handleContextMenu(e, "file", file)}
         >
-          <div className="aspect-square bg-neutral-50 flex items-center justify-center relative overflow-hidden">
+          <div className="aspect-square bg-gray-900/60 flex items-center justify-center relative overflow-hidden">
             {/* Preview Image */}
             {file.type.startsWith("image/") ? (
               <img 
@@ -216,14 +218,14 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
               <button
                 onClick={(e) => handleDownload(file, e)}
-                className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300"
                 title="Download"
               >
                 <Download size={16} />
               </button>
               <button
                 onClick={(e) => handleShare(file, e)}
-                className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300"
                 title="Share"
               >
                 <Share size={16} />
@@ -231,7 +233,7 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
               {section === "trash" ? (
                 <button
                   onClick={(e) => handleRestore(file, e)}
-                  className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                  className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300"
                   title="Restore"
                 >
                   <RefreshCw size={16} />
@@ -240,14 +242,14 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
                 <>
                   <button
                     onClick={(e) => toggleFavorite(file, e)}
-                    className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600"
+                    className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300"
                     title={file.favorite ? "Remove from favorites" : "Add to favorites"}
                   >
                     {file.favorite ? <StarOff size={16} /> : <Star size={16} />}
                   </button>
                   <button
                     onClick={(e) => handleDelete(file, e)}
-                    className="p-1.5 bg-white rounded-full shadow-sm hover:bg-neutral-100 text-neutral-600 hover:text-red-500"
+                    className="p-1.5 bg-gray-800 rounded-full shadow-md hover:bg-gray-700 text-gray-300 hover:text-red-400"
                     title="Delete"
                   >
                     <Trash2 size={16} />
@@ -257,10 +259,10 @@ export default function FileGrid({ folders, files, section }: FileGridProps) {
             </div>
           </div>
           <div className="p-3">
-            <h3 className="text-sm font-medium text-neutral-800 truncate">{file.name}</h3>
+            <h3 className="text-sm font-medium text-gray-200 truncate">{file.name}</h3>
             <div className="flex justify-between items-center mt-1">
-              <span className="text-xs text-neutral-500">{formatFileSize(file.size)}</span>
-              <span className="text-xs text-neutral-500">{formatDate(file.updatedAt)}</span>
+              <span className="text-xs text-gray-400">{formatFileSize(file.size)}</span>
+              <span className="text-xs text-gray-400">{formatDate(file.updatedAt)}</span>
             </div>
           </div>
         </div>
