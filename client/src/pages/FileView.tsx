@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileWithPath, FolderWithPath } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, FolderPlus, Grid, List, SortDesc, RefreshCw, Trash, UserIcon, LogOut } from "lucide-react";
+import { Upload, FolderPlus, Grid, List, SortDesc, RefreshCw, Trash, UserIcon, LogOut, Image, FileText, Video, Music, Archive, File } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -37,7 +37,9 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
     sortBy, 
     setSortBy, 
     isDragging,
-    setIsDragging
+    setIsDragging,
+    fileTypeFilter,
+    setFileTypeFilter
   } = useFileContext();
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
@@ -75,12 +77,17 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
     }
   };
 
-  // Sort data based on the selected sort method
+  // Sort and filter data based on the selected methods
   const sortedData = React.useMemo(() => {
     if (!data) return { folders: [], files: [] };
     
     const sortFolders = [...(data.folders || [])];
-    const sortFiles = [...(data.files || [])];
+    let sortFiles = [...(data.files || [])];
+    
+    // Filter files by type if a filter is applied
+    if (fileTypeFilter !== 'all') {
+      sortFiles = sortFiles.filter(file => file.type === fileTypeFilter);
+    }
     
     // Sort folders
     sortFolders.sort((a, b) => {
@@ -107,7 +114,7 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
     });
     
     return { folders: sortFolders, files: sortFiles };
-  }, [data, sortBy]);
+  }, [data, sortBy, fileTypeFilter]);
 
   return (
     <main 
@@ -412,8 +419,68 @@ export default function FileView({ section, folderId, data, isLoading, error }: 
         </div>
       )}
       
+      {/* Type Filter Buttons */}
+      <div className="px-6 pt-6">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'all' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('all')}
+          >
+            <File size={16} className="mr-2" />
+            Tous les fichiers
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'image' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('image')}
+          >
+            <Image size={16} className="mr-2 text-blue-400" />
+            Images
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'document' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('document')}
+          >
+            <FileText size={16} className="mr-2 text-green-400" />
+            Documents
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'video' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('video')}
+          >
+            <Video size={16} className="mr-2 text-red-400" />
+            Vidéos
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'audio' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('audio')}
+          >
+            <Music size={16} className="mr-2 text-purple-400" />
+            Audio
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`border ${fileTypeFilter === 'archive' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-gray-700/50 bg-gray-800/30 text-gray-300 hover:bg-gray-700/30'} hover-float`}
+            onClick={() => setFileTypeFilter('archive')}
+          >
+            <Archive size={16} className="mr-2 text-yellow-400" />
+            Archives
+          </Button>
+        </div>
+      </div>
+      
       {/* Files and Folders Content */}
-      <div className="p-6">
+      <div className="px-6 pb-6">
         {isLoading ? (
           // Loading skeleton
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
