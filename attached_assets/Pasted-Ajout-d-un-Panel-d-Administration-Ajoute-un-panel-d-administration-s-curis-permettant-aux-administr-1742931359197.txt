@@ -1,0 +1,59 @@
+Ajout d’un Panel d’Administration
+Ajoute un panel d’administration sécurisé permettant aux administrateurs de gérer les utilisateurs, les fichiers et la plateforme. L’administration doit être accessible uniquement aux comptes ayant le rôle "Admin", avec une interface complète et des contrôles avancés.
+
+🛡️ Accès & Sécurité
+Création d’un rôle "Admin" qui donne accès au panel.
+
+Authentification 2FA pour les administrateurs.
+
+Journal des connexions et activités des admins (IP, date, actions effectuées).
+
+Possibilité de gérer plusieurs niveaux d’administrateurs (Super Admin, Modérateur…).
+
+👥 Gestion des Utilisateurs
+Liste des utilisateurs inscrits, avec filtre par email, date d’inscription, activité.
+
+Possibilité de bloquer, bannir ou suspendre un utilisateur.
+
+Réinitialisation du mot de passe d’un utilisateur.
+
+Modification des rôles (User ↔ Admin).
+
+Historique des actions de chaque utilisateur (uploads, téléchargements…).
+
+📁 Gestion des Fichiers
+Vue complète des fichiers stockés, avec options pour :
+
+Supprimer des fichiers non conformes.
+
+Forcer l’extension du stockage d’un utilisateur.
+
+Voir les fichiers récemment supprimés et les restaurer si nécessaire.
+
+Détection des fichiers suspects (contenus illégaux, virus…).
+
+Gestion des fichiers partagés avec possibilité de révoquer les accès.
+
+📊 Statistiques & Logs
+Tableau de bord avec :
+
+Nombre total de fichiers stockés & espace utilisé.
+
+Nombre d’utilisateurs actifs/journaliers.
+
+Top utilisateurs par volume de stockage.
+
+Fichiers les plus téléchargés.
+
+Logs détaillés des activités des utilisateurs et des admins.
+
+⚙️ Paramètres Avancés
+Définition des politiques de stockage (limite d’espace, durée de rétention).
+
+Configuration des notifications envoyées aux utilisateurs (par email ou app).
+
+Gestion des abonnements premium pour les utilisateurs ayant un stockage étendu.
+
+Possibilité de désactiver temporairement l’upload en cas de maintenance.
+
+Le panel d’administration doit être intuitif, sécurisé et accessible uniquement aux comptes autorisés. Toutes les actions doivent être enregistrées pour assurer une bonne traçabilité.
