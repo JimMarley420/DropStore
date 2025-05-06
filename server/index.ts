@@ -54,7 +54,7 @@ app.use((req, res, next) => {
     }
 
     // Utilise le port d'environnement si dispo (ex: pour déploiement), sinon 5000 par défaut
-    const port = parseInt(process.env.PORT || "5000", 10);
+    const port = parseInt(process.env.PORT || "444", 10);
     server.listen(
       {
         port,
